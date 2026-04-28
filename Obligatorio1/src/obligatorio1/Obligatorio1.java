@@ -13,8 +13,12 @@ public class Obligatorio1 {
 
         Tablero t = new Tablero();
 
-        t.cargarManual(in);   // ← se lo pasás acá
+        t.cargarManual(in);   //  se lo pasás acá
+        
+        System.out.println(t.moverFicha(3, 2, "O", 'B', 2));
 
         t.mostrar();
+        
+   
     }
 }
