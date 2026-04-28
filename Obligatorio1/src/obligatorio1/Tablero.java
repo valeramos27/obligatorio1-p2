@@ -1,5 +1,9 @@
-package obligatorio1;
+/*
+ Aitana Alvarez - 340201
+ Valentina Ramos - 224347
+ */
 
+package obligatorio1;
 import java.util.Scanner;
 
 public class Tablero {
