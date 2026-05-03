@@ -5,6 +5,7 @@
 
 package obligatorio1;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Tester {
 
@@ -51,5 +52,27 @@ public class Tester {
 
     public void setListaTesteos(ArrayList<Testeo> listaTesteos) {
         this.listaTesteos = listaTesteos;
+    }
+    
+    
+    
+    
+    public void agregarTesteo(Testeo unTesteo){
+       if(unTesteo != null){
+           this.listaTesteos.add(unTesteo);
+       }
+    }
+    
+    public ArrayList<Testeo> getTesteosOrdenados() {
+    ArrayList<Testeo> copia = new ArrayList<>(this.listaTesteos);
+    Collections.sort(copia);
+    return copia;
+}
+    
+    @Override
+    public String toString(){
+        return "Tester: " + this.nombre +
+               "- Edad: " + this.edad +
+               "- Experiencia: " + this.experiencia + "años";
     }
 }

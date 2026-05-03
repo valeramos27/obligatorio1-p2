@@ -10,6 +10,9 @@ public class Tablero {
 
 //ARMAR EL TABLERO VACIO     
     private char[][] tablero;
+    public static final char BLANCA = 'B';
+    public static final char NEGRA = 'N';
+    public static final char VACIO = 'V';
 
     //Constructor
     public Tablero() {
@@ -20,7 +23,7 @@ public class Tablero {
     private void inicializar() {
         for (int fila = 0; fila < 8; fila = fila + 1) {
             for (int columna = 0; columna < 10; columna = columna + 1) {
-                tablero[fila][columna] = ' ';
+                tablero[fila][columna] = VACIO;
             }
     }
 
@@ -36,8 +39,13 @@ public class Tablero {
         System.out.println("+");
 
         // contenido
-        for (int col = 0; col < 10; col = col + 1) {
-            System.out.print("| " + tablero[fila][col] + " ");
+         for (int col = 0; col < 10; col = col + 1) {
+            char celda = tablero[fila][col];
+            if (celda == VACIO) {
+                System.out.print("|   ");
+            } else {
+                System.out.print("| " + celda + " ");
+            }
         }
         System.out.println("|");
     }
@@ -51,61 +59,60 @@ public class Tablero {
     
     //CARGA DE VALORES PARA EL TABLERO POR DEFECTO 
     public void cargarPorDefecto() {
-    // cargar patrón por defecto
     for (int fila = 0; fila < 8; fila = fila + 1) {
-    for (int columna = 0; columna < 10; columna = columna + 1) {
+        for (int columna = 0; columna < 10; columna = columna + 1) {
 
-        if (fila == 0) {
-            // patron N (empieza vacio)
-            if ((columna / 2) % 2 == 1) {
-                tablero[fila][columna] = 'N';
-                } else {
-                    tablero[fila][columna] = ' ';
-            }
-        } else {
-            if (fila == 1) {
-                // todo N
-                tablero[fila][columna] = 'N';
-                } else {
-                    if (fila == 2) {
-                        // patrón N (empieza con N)
-                        if ((columna / 2) % 2 == 1) {
-                            tablero[fila][columna] = ' ';
-                                } else {
-                                    tablero[fila][columna] = 'N';
-                            }
+            if (fila == 0) {
+                // patron N (empieza vacio)
+                if ((columna / 2) % 2 == 1) {
+                    tablero[fila][columna] = NEGRA;
                     } else {
-                        if (fila == 5) {
-                            // patron B (empieza con B)
+                        tablero[fila][columna] = VACIO;
+                }
+            } else {
+                if (fila == 1) {
+                    // todo N
+                    tablero[fila][columna] = NEGRA;
+                } else {
+                        if (fila == 2) {
+                            // patrón N (empieza con N)
                             if ((columna / 2) % 2 == 1) {
-                                tablero[fila][columna] = ' ';
-                                } else {
-                                    tablero[fila][columna] = 'B';
-                            }
-                        } else {
-                            if (fila == 6) {
-                                // todo B
-                                tablero[fila][columna] = 'B';
+                                tablero[fila][columna] = VACIO;
                             } else {
-                                if (fila == 7) {
-                                    // patron B (empieza vacío)
-                                    if ((columna / 2) % 2 == 1) {
-                                        tablero[fila][columna] = 'B';
-                                        } else {
-                                            tablero[fila][columna] = ' ';
-                                    }
+                                        tablero[fila][columna] = NEGRA;
+                              }
+                        } else {
+                            if (fila == 5) {
+                                // patron B (empieza con B)
+                                if ((columna / 2) % 2 == 1) {
+                                    tablero[fila][columna] = VACIO;
                                 } else {
-                                    // vacio
-                                    tablero[fila][columna] = ' ';
+                                        tablero[fila][columna] = BLANCA;
+                                  }
+                            } else {
+                                if (fila == 6) {
+                                    // todo B
+                                    tablero[fila][columna] = BLANCA;
+                                } else {
+                                    if (fila == 7) {
+                                        // patron B (empieza vacío)
+                                        if ((columna / 2) % 2 == 1) {
+                                            tablero[fila][columna] = BLANCA;
+                                        } else {
+                                                tablero[fila][columna] = VACIO;
+                                           }
+                                    } else {
+                                        // vacio
+                                        tablero[fila][columna] = VACIO;
+                                    }
                                 }
                             }
                         }
                     }
-                }
-}
+              }
 
+        }
     }
-}
 }
 
     public void cargarManual(Scanner in) {
@@ -124,7 +131,7 @@ public class Tablero {
                 char valor = entrada.charAt(0);
 
                 if (valor == 'V') {
-                    tablero[fila][columna] = ' ';
+                    tablero[fila][columna] = 'V';
                 } else {
                     tablero[fila][columna] = valor;
                 }
@@ -211,7 +218,7 @@ public class Tablero {
                 pudoMover = false;
             } else {
                 if (i < pasos) {
-                    if (tablero[filaActual][colActual] != ' ') {
+                    if (tablero[filaActual][colActual] != VACIO) {
                         pudoMover = false;
                     }
                 }
@@ -228,7 +235,7 @@ public class Tablero {
 
         if (pudoMover) {
             tablero[filaActual][colActual] = color;
-            tablero[fila][col] = ' ';
+            tablero[fila][col] = VACIO;
         }
 
         return pudoMover;
@@ -348,11 +355,6 @@ public class Tablero {
                 } else {
                     filasFinal[i] = fFinal;
                     colsFinal[i] = cFinal;
-            } else {
-                if (i < pasos) {
-                    if (tablero[filaActual][colActual] != ' ') {
-                        pudoMover = false;
-                    }
                 }
             }
 
@@ -378,7 +380,7 @@ public class Tablero {
                     j = j + 1;
                 }
 
-                if (!esParteDelGrupo && tablero[nuevaF][nuevaC] != ' ') {
+                if (!esParteDelGrupo && tablero[nuevaF][nuevaC] != VACIO) {
                     esValido = false;
                 }
 
@@ -390,7 +392,7 @@ public class Tablero {
 
         if (esValido) {
             for (i = 0; i < tam; i = i + 1) {
-                tablero[filasOrigen[i]][colsOrigen[i]] = ' ';
+                tablero[filasOrigen[i]][colsOrigen[i]] = VACIO;
             }
 
             for (i = 0; i < tam; i = i + 1) {
@@ -463,19 +465,56 @@ public class Tablero {
 
         return cantidad;
         }
-
-        if (pudoMover) {
-            if (tablero[filaActual][colActual] == color) {
-                pudoMover = false;
+        
+    public int contarFichas(char[][] matriz, char color){
+        int contador = 0;
+        for (int fila = 0; fila < 8; fila++) {
+            for (int columna = 0; columna < 10; columna++) {
+                if(matriz[fila][columna] == color){
+                    contador = contador + 1;
+                }                           
+            }            
+        }
+        return contador;
+    }
+    
+    public String prepararTablero(char[][] matriz) {
+    String resultado = "";
+    
+    for (int fila = 0; fila < 8; fila = fila + 1) {
+        // línea de separación
+        for (int col = 0; col < 10; col = col + 1) {
+            resultado += "+---";
+        }
+        resultado += "+\n";
+        
+        // contenido
+        for (int col = 0; col < 10; col = col + 1) {
+            char celda = matriz[fila][col];
+            if (celda == VACIO) {
+                resultado += "|   ";
+            } else {
+                resultado += "| " + celda + " ";
             }
         }
-
-        if (pudoMover) {
-            tablero[filaActual][colActual] = color;
-            tablero[fila][col] = ' ';
-        }
-
-        return pudoMover;
+        resultado += "|\n";
     }
+    
+    // última línea
+    for (int col = 0; col < 10; col = col + 1) {
+        resultado += "+---";
+    }
+    resultado += "+\n";
+    
+    return resultado;
 }
-       
+    public char[][] clonarMatriz(char[][] origen) {
+    char[][] copia = new char[8][10];
+    for (int fila = 0; fila < 8; fila = fila + 1) {
+        for (int columna = 0; columna < 10; columna = columna + 1) {
+            copia[fila][columna] = origen[fila][columna];
+        }
+    }
+    return copia;
+}
+}
