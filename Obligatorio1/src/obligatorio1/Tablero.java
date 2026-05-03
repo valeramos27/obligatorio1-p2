@@ -348,6 +348,11 @@ public class Tablero {
                 } else {
                     filasFinal[i] = fFinal;
                     colsFinal[i] = cFinal;
+            } else {
+                if (i < pasos) {
+                    if (tablero[filaActual][colActual] != ' ') {
+                        pudoMover = false;
+                    }
                 }
             }
 
@@ -457,6 +462,20 @@ public class Tablero {
         }
 
         return cantidad;
+        }
+
+        if (pudoMover) {
+            if (tablero[filaActual][colActual] == color) {
+                pudoMover = false;
+            }
+        }
+
+        if (pudoMover) {
+            tablero[filaActual][colActual] = color;
+            tablero[fila][col] = ' ';
+        }
+
+        return pudoMover;
     }
 }
        
