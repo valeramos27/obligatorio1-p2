@@ -59,61 +59,60 @@ public class Tablero {
     
     //CARGA DE VALORES PARA EL TABLERO POR DEFECTO 
     public void cargarPorDefecto() {
-    // cargar patrón por defecto
     for (int fila = 0; fila < 8; fila = fila + 1) {
-    for (int columna = 0; columna < 10; columna = columna + 1) {
+        for (int columna = 0; columna < 10; columna = columna + 1) {
 
-        if (fila == 0) {
-            // patron N (empieza vacio)
-            if ((columna / 2) % 2 == 1) {
-                tablero[fila][columna] = NEGRA;
-                } else {
-                    tablero[fila][columna] = VACIO;
-            }
-        } else {
-            if (fila == 1) {
-                // todo N
-                tablero[fila][columna] = NEGRA;
-                } else {
-                    if (fila == 2) {
-                        // patrón N (empieza con N)
-                        if ((columna / 2) % 2 == 1) {
-                            tablero[fila][columna] = VACIO;
-                                } else {
-                                    tablero[fila][columna] = NEGRA;
-                            }
+            if (fila == 0) {
+                // patron N (empieza vacio)
+                if ((columna / 2) % 2 == 1) {
+                    tablero[fila][columna] = NEGRA;
                     } else {
-                        if (fila == 5) {
-                            // patron B (empieza con B)
+                        tablero[fila][columna] = VACIO;
+                }
+            } else {
+                if (fila == 1) {
+                    // todo N
+                    tablero[fila][columna] = NEGRA;
+                } else {
+                        if (fila == 2) {
+                            // patrón N (empieza con N)
                             if ((columna / 2) % 2 == 1) {
                                 tablero[fila][columna] = VACIO;
-                                } else {
-                                    tablero[fila][columna] = BLANCA;
-                            }
-                        } else {
-                            if (fila == 6) {
-                                // todo B
-                                tablero[fila][columna] = BLANCA;
                             } else {
-                                if (fila == 7) {
-                                    // patron B (empieza vacío)
-                                    if ((columna / 2) % 2 == 1) {
-                                        tablero[fila][columna] = BLANCA;
-                                        } else {
-                                            tablero[fila][columna] = VACIO;
-                                    }
-                                } else {
-                                    // vacio
+                                        tablero[fila][columna] = NEGRA;
+                              }
+                        } else {
+                            if (fila == 5) {
+                                // patron B (empieza con B)
+                                if ((columna / 2) % 2 == 1) {
                                     tablero[fila][columna] = VACIO;
+                                } else {
+                                        tablero[fila][columna] = BLANCA;
+                                  }
+                            } else {
+                                if (fila == 6) {
+                                    // todo B
+                                    tablero[fila][columna] = BLANCA;
+                                } else {
+                                    if (fila == 7) {
+                                        // patron B (empieza vacío)
+                                        if ((columna / 2) % 2 == 1) {
+                                            tablero[fila][columna] = BLANCA;
+                                        } else {
+                                                tablero[fila][columna] = VACIO;
+                                           }
+                                    } else {
+                                        // vacio
+                                        tablero[fila][columna] = VACIO;
+                                    }
                                 }
                             }
                         }
                     }
-                }
-}
+              }
 
+        }
     }
-}
 }
 
     public void cargarManual(Scanner in) {
