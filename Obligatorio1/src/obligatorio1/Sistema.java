@@ -13,11 +13,14 @@ public class Sistema {
 
     private ArrayList<Tester> listaTesters;
     private Tablero tablero;
+    private int proximoNumeroTesteo;
+
 
     public Sistema() {
         this.listaTesters = new ArrayList<>();
         this.tablero = new Tablero();
         this.tablero.cargarPorDefecto();
+        this.proximoNumeroTesteo = 1;
     }
 
     public ArrayList<Tester> getListaTesters() {
@@ -65,7 +68,7 @@ private void mostrarDetalleTesteo(Testeo testeo) {
     System.out.println("Tester: " + testeo.getNombreTester());
     System.out.println("Caso: " + testeo.getCaso());
     System.out.println("Parametros usados: " + testeo.getParametrosUsados());
-    System.out.println("Comentario: " + testeo.getComentario());
+    System.out.println("Comentario: " + testeo.comentario());
     System.out.println("Resultado: " + testeo.getResultado());
 
     System.out.println();
@@ -159,12 +162,234 @@ private void mostrarDetalleTesteo(Testeo testeo) {
 
     // Opcion 3
     public void registrarTesteo(Scanner in) {
-        // TODO: implementar
-        System.out.println("(opcion C: registrar testeo - pendiente)");
-    }
+        // Opcion 3
+            // 1. Validar que haya testers
+            if (this.listaTesters.isEmpty()) {
+                System.out.println("No hay testers registrados. Registre al menos uno antes de testear.");
+                return;
+            }
 
-// Opcion 4
-public void consultaTesters(Scanner in) {
+            // 2. Mostrar lista de testers y elegir
+            ArrayList<Tester> testersOrdenados = this.obtenerTestersOrdenadosPorNombre();
+            System.out.println("Lista de testers:");
+            for (int i = 0; i < testersOrdenados.size(); i = i + 1) {
+                System.out.println((i + 1) + ") " + testersOrdenados.get(i).getNombre());
+            }
+            System.out.print("Elija un tester: ");
+            int opcionTester = in.nextInt();
+            while (opcionTester < 1 || opcionTester > testersOrdenados.size()) {
+                System.out.print("Opcion invalida. Elija un tester valido: ");
+                opcionTester = in.nextInt();
+            }
+            Tester testerElegido = testersOrdenados.get(opcionTester - 1);
+
+            // 3. Elegir caso
+            System.out.println("Casos disponibles:");
+            System.out.println("  1) Contar fichas de un color determinado");
+            System.out.println("  2) Validar movimiento individual");
+            System.out.println("  3) Validar movimiento en grupo");
+            System.out.println("  4) Preparar tablero");
+            System.out.println("  5) Verificar conexion");
+            System.out.print("Ingrese el caso a testear (1-5): ");
+            int caso = in.nextInt();
+            while (caso < 1 || caso > 5) {
+                System.out.print("Caso invalido. Ingrese un numero entre 1 y 5: ");
+                caso = in.nextInt();
+            }
+
+            // 4. Pedir comentario opcional (limpiar buffer primero)
+            in.nextLine();
+            System.out.print("Ingrese un comentario sobre de que se va a tratar la prueba (opcional, ENTER para omitir): ");
+            String comentario = in.nextLine();
+            if (comentario.trim().isEmpty()) {
+                comentario = "(sin comentario)";
+            }
+
+            // 5. Clonar matriz ANTES de ejecutar
+            char[][] matrizOriginal = this.tablero.clonarMatriz(this.tablero.getMatriz());
+
+            // 6. Ejecutar el caso correspondiente
+            String parametros = "";
+            String resultado = "";
+
+            switch (caso) {
+                case 1:
+                    String[] datos1 = this.ejecutarCaso1(in);
+                    parametros = datos1[0];
+                    resultado = datos1[1];
+                    break;
+                case 2:
+                    String[] datos2 = this.ejecutarCaso2(in);
+                    parametros = datos2[0];
+                    resultado = datos2[1];
+                    break;
+                case 3:
+                    String[] datos3 = this.ejecutarCaso3(in);
+                    parametros = datos3[0];
+                    resultado = datos3[1];
+                    break;
+                case 4:
+                    String[] datos4 = this.ejecutarCaso4();
+                    parametros = datos4[0];
+                    resultado = datos4[1];
+                    break;
+                case 5:
+                    String[] datos5 = this.ejecutarCaso5(in);
+                    parametros = datos5[0];
+                    resultado = datos5[1];
+                    break;
+            }
+
+            // 7. Clonar matriz resultante
+            char[][] matrizResultante = this.tablero.clonarMatriz(this.tablero.getMatriz());
+
+            // 8. Mostrar resultado y matriz por consola
+            System.out.println();
+            System.out.println("Resultado: " + resultado);
+            System.out.println("Matriz actual:");
+            this.tablero.mostrar();
+
+            // 9. Crear el Testeo con numero autonumerico y guardarlo
+            Testeo nuevo = new Testeo(
+                this.proximoNumeroTesteo,
+                testerElegido.getNombre(),
+                caso,
+                parametros,
+                comentario,
+                resultado,
+                matrizOriginal,
+                matrizResultante
+            );
+            testerElegido.agregarTesteo(nuevo);
+            this.proximoNumeroTesteo = this.proximoNumeroTesteo + 1;
+
+            System.out.println("Testeo numero " + nuevo.getNumero() + " registrado correctamente.");
+        }
+
+        // ============================================================
+        // SUBMETODOS PARA CADA CASO
+        // ============================================================
+
+        // Caso 1: contarFichas
+        private String[] ejecutarCaso1(Scanner in) {
+            char color = this.pedirColor(in);
+            int cantidad = this.tablero.contarFichas(this.tablero.getMatriz(), color);
+            String parametros = "color=" + color;
+            String resultado = "Cantidad de fichas " + color + ": " + cantidad;
+            return new String[] { parametros, resultado };
+        }
+
+        // Caso 2: validarMovimientoIndividual
+        private String[] ejecutarCaso2(Scanner in) {
+            char color = this.pedirColor(in);
+            String sentido = this.pedirSentido(in, true); // 8 sentidos permitidos
+            int fila = this.pedirEntero(in, "Ingrese la fila (0-7): ", 0, 7);
+            int col = this.pedirEntero(in, "Ingrese la columna (0-9): ", 0, 9);
+            int pasos = this.pedirEntero(in, "Ingrese la cantidad de pasos: ", 1, 10);
+
+            boolean ok = this.tablero.moverFicha(fila, col, sentido, color, pasos);
+
+            String parametros = "color=" + color + ", sentido=" + sentido
+                    + ", fila=" + fila + ", col=" + col + ", pasos=" + pasos;
+            String resultado = ok ? "true" : "false";
+            return new String[] { parametros, resultado };
+        }
+
+        // Caso 3: validarMovimientoEnGrupo
+        private String[] ejecutarCaso3(Scanner in) {
+            char color = this.pedirColor(in);
+            String forma = this.pedirForma(in);
+            String sentido = this.pedirSentido(in, false); // solo N, S, E, O
+            int fila = this.pedirEntero(in, "Ingrese la fila del extremo (0-7): ", 0, 7);
+            int col = this.pedirEntero(in, "Ingrese la columna del extremo (0-9): ", 0, 9);
+            int tam = this.pedirEntero(in, "Ingrese el tamaño del grupo: ", 1, 10);
+            int pasos = this.pedirEntero(in, "Ingrese la cantidad de pasos: ", 1, 10);
+
+            boolean ok = this.tablero.moverGrupo(fila, col, tam, forma, sentido, color, pasos);
+
+            String parametros = "color=" + color + ", forma=" + forma + ", sentido=" + sentido
+                    + ", fila=" + fila + ", col=" + col + ", tam=" + tam + ", pasos=" + pasos;
+            String resultado = ok ? "true" : "false";
+            return new String[] { parametros, resultado };
+        }
+
+        // Caso 4: prepararTablero
+        private String[] ejecutarCaso4() {
+            String tableroString = this.tablero.prepararTablero(this.tablero.getMatriz());
+            String parametros = "(sin parametros)";
+            String resultado = "\n" + tableroString;
+            return new String[] { parametros, resultado };
+        }
+
+        // Caso 5: verificarConexion
+        private String[] ejecutarCaso5(Scanner in) {
+            char color = this.pedirColor(in);
+            boolean conectadas = this.tablero.verificarConexion(color);
+            String parametros = "color=" + color;
+            String resultado = conectadas ? "true" : "false";
+            return new String[] { parametros, resultado };
+        }
+
+        // ============================================================
+        // AUXILIARES DE INGRESO Y VALIDACION
+        // ============================================================
+
+        private char pedirColor(Scanner in) {
+            System.out.print("Ingrese el color (B/N): ");
+            String entrada = in.next().toUpperCase();
+            while (!entrada.equals("B") && !entrada.equals("N")) {
+                System.out.print("Color invalido. Ingrese B o N: ");
+                entrada = in.next().toUpperCase();
+            }
+            return entrada.charAt(0);
+        }
+
+        private String pedirSentido(Scanner in, boolean permiteDiagonales) {
+            String mensaje = permiteDiagonales
+                    ? "Ingrese el sentido (N, S, E, O, NE, NO, SE, SO): "
+                    : "Ingrese el sentido (N, S, E, O): ";
+            System.out.print(mensaje);
+            String entrada = in.next().toUpperCase();
+
+            boolean valido = false;
+            while (!valido) {
+                if (permiteDiagonales) {
+                    valido = entrada.equals("N") || entrada.equals("S") || entrada.equals("E") || entrada.equals("O")
+                          || entrada.equals("NE") || entrada.equals("NO") || entrada.equals("SE") || entrada.equals("SO");
+                } else {
+                    valido = entrada.equals("N") || entrada.equals("S") || entrada.equals("E") || entrada.equals("O");
+                }
+                if (!valido) {
+                    System.out.print("Sentido invalido. " + mensaje);
+                    entrada = in.next().toUpperCase();
+                }
+            }
+            return entrada;
+        }
+
+        private String pedirForma(Scanner in) {
+            System.out.print("Ingrese la forma del grupo (H: horizontal / V: vertical): ");
+            String entrada = in.next().toUpperCase();
+            while (!entrada.equals("H") && !entrada.equals("V")) {
+                System.out.print("Forma invalida. Ingrese H o V: ");
+                entrada = in.next().toUpperCase();
+            }
+            return entrada;
+        }
+
+        private int pedirEntero(Scanner in, String mensaje, int min, int max) {
+            System.out.print(mensaje);
+            int valor = in.nextInt();
+            while (valor < min || valor > max) {
+                System.out.print("Valor invalido. Debe estar entre " + min + " y " + max + ". " + mensaje);
+                valor = in.nextInt();
+            }
+            return valor;
+        }
+    
+
+    // Opcion 4
+    public void consultaTesters(Scanner in) {
     if (this.listaTesters.isEmpty()) {
         System.out.println("No hay testers registrados.");
     } else {
@@ -210,67 +435,54 @@ public void consultaTesters(Scanner in) {
 
             this.mostrarDetalleTesteo(testeoElegido);
         }
-        return encontrado;
     }
-
-    // ============================================================
-    // OPCIONES DEL MENU
-    // ============================================================
-
-    // Opcion 1
-    public void registrarTester(Scanner in) {
-            System.out.print("Ingrese el nombre del tester: ");
-            String nombre = in.next();
-
-            // Validar que el nombre no este repetido
-            while (this.buscarTesterPorNombre(nombre) != null) {
-                System.out.print("Ya existe un tester con ese nombre. Ingrese otro: ");
-                nombre = in.next();
-            }
-
-            System.out.print("Ingrese la edad: ");
-            int edad = in.nextInt();
-            while (edad <= 0) {
-                System.out.print("Edad invalida. Ingrese una edad mayor a 0: ");
-                edad = in.nextInt();
-            }
-
-            System.out.print("Ingrese los años de experiencia: ");
-            int experiencia = in.nextInt();
-            while (experiencia < 0) {
-                System.out.print("Experiencia invalida. Ingrese un valor mayor o igual a 0: ");
-                experiencia = in.nextInt();
-            }
-
-            Tester nuevo = new Tester(nombre, edad, experiencia);
-            this.listaTesters.add(nuevo);
-
-            System.out.println("Tester registrado correctamente:");
-            System.out.println(nuevo);     
     }
-
-    // Opcion 2
-    public void registrarMatriz(Scanner in) {
-        // TODO: implementar
-        System.out.println("(opcion B: registrar matriz - pendiente)");
-    }
-
-    // Opcion 3
-    public void registrarTesteo(Scanner in) {
-        // TODO: implementar
-        System.out.println("(opcion C: registrar testeo - pendiente)");
-    }
-
-    // Opcion 4
-    public void consultaTesters(Scanner in) {
-        // TODO: implementar
-        System.out.println("(opcion D: consulta de testers - pendiente)");
-    }
-}
-
     // Opcion 5
-    public void mostrarEstadisticas() {
-        // TODO: implementar
-        System.out.println("(opcion E: estadisticas - pendiente)");
+        public void mostrarEstadisticas() {
+            // 1. Validar que haya testers
+            if (this.listaTesters.isEmpty()) {
+                System.out.println("No hay testers registrados.");
+                return;
+            }
+
+            // 2. Calcular el maximo de testeos realizados
+            int maximo = 0;
+            for (int i = 0; i < this.listaTesters.size(); i = i + 1) {
+                int cantidad = this.listaTesters.get(i).getListaTesteos().size();
+                if (cantidad > maximo) {
+                    maximo = cantidad;
+                }
+            }
+
+            // 3. Mostrar testers con mayor cantidad de testeos
+            System.out.println();
+            System.out.println("------------------------------");
+            if (maximo == 0) {
+                System.out.println("Ningun tester realizo testeos todavia.");
+            } else {
+                System.out.println("Tester(s) con mayor cantidad de testeos (" + maximo + "):");
+                for (int i = 0; i < this.listaTesters.size(); i = i + 1) {
+                    Tester actual = this.listaTesters.get(i);
+                    if (actual.getListaTesteos().size() == maximo) {
+                        System.out.println("- " + actual);
+                    }
+                }
+            }
+
+            // 4. Mostrar testers sin testeos
+            System.out.println();
+            System.out.println("Tester(s) sin testeos:");
+            boolean hayAlguno = false;
+            for (int i = 0; i < this.listaTesters.size(); i = i + 1) {
+                Tester actual = this.listaTesters.get(i);
+                if (actual.getListaTesteos().isEmpty()) {
+                    System.out.println("- " + actual);
+                    hayAlguno = true;
+                }
+            }
+            if (!hayAlguno) {
+                System.out.println("(no hay)");
+            }
+            System.out.println("------------------------------");
+        }
     }
-}

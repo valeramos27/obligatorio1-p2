@@ -13,7 +13,7 @@ public class Tablero {
     public static final char BLANCA = 'B';
     public static final char NEGRA = 'N';
     public static final char VACIO = 'V';
-
+    
     //Constructor
     public Tablero() {
         tablero = new char[8][10];
@@ -30,16 +30,24 @@ public class Tablero {
     }
 
     public void mostrar() {
-    for (int fila = 0; fila < 8; fila = fila + 1) {
+    // Encabezado con números de columna
+    System.out.print("   ");  // espacio para alinear con el número de fila
+    for (int col = 0; col < 10; col = col + 1) {
+        System.out.print("  " + col + " ");
+    }
+    System.out.println();
 
+    for (int fila = 0; fila < 8; fila = fila + 1) {
         // línea de separación
+        System.out.print("   ");  // espacio para la columna de números de fila
         for (int col = 0; col < 10; col = col + 1) {
             System.out.print("+---");
         }
         System.out.println("+");
 
-        // contenido
-         for (int col = 0; col < 10; col = col + 1) {
+        // contenido (con número de fila a la izquierda)
+        System.out.print(" " + fila + " ");
+        for (int col = 0; col < 10; col = col + 1) {
             char celda = tablero[fila][col];
             if (celda == VACIO) {
                 System.out.print("|   ");
@@ -51,11 +59,12 @@ public class Tablero {
     }
 
     // última línea
+    System.out.print("   ");
     for (int col = 0; col < 10; col = col + 1) {
         System.out.print("+---");
     }
     System.out.println("+");
-  }
+}
     
     //CARGA DE VALORES PARA EL TABLERO POR DEFECTO 
     public void cargarPorDefecto() {
@@ -116,28 +125,42 @@ public class Tablero {
 }
 
     public void cargarManual(Scanner in) {
-        for (int fila = 0; fila < 8; fila = fila + 1) {
-            System.out.println("Ingrese la fila " + fila + ":");
+    for (int fila = 0; fila < 8; fila = fila + 1) {
+        System.out.print("Ingrese la fila " + fila + ": ");
+        String entrada = in.next().toUpperCase();
 
-            for (int columna = 0; columna < 10; columna = columna + 1) {
-                String entrada = in.next();
-
-                while (entrada.length() != 1 || 
-                      (entrada.charAt(0) != 'N' && entrada.charAt(0) != 'B' && entrada.charAt(0) != 'V')) {
-
-                    System.out.println("Error. Ingrese solo un caracter: N, B o V");
-                    entrada = in.next();
+        boolean valida = false;
+        while (!valida) {
+            if (entrada.length() != 10) {
+                System.out.print("Error. La fila debe tener exactamente 10 caracteres. Ingrese la fila " + fila + ": ");
+                entrada = in.next().toUpperCase();
+            } else {
+                // Validar que todos los caracteres sean B, N o V
+                boolean todosValidos = true;
+                int i = 0;
+                while (i < 10 && todosValidos) {
+                    char c = entrada.charAt(i);
+                    if (c != 'B' && c != 'N' && c != 'V') {
+                        todosValidos = false;
+                    }
+                    i = i + 1;
                 }
-                char valor = entrada.charAt(0);
 
-                if (valor == 'V') {
-                    tablero[fila][columna] = 'V';
+                if (!todosValidos) {
+                    System.out.print("Error. Solo se permiten caracteres B, N o V. Ingrese la fila " + fila + ": ");
+                    entrada = in.next().toUpperCase();
                 } else {
-                    tablero[fila][columna] = valor;
+                    valida = true;
                 }
             }
         }
+
+        // Cargar la fila en la matriz
+        for (int columna = 0; columna < 10; columna = columna + 1) {
+            tablero[fila][columna] = entrada.charAt(columna);
+        }
     }
+}
     public boolean moverFicha(int fila, int col, String sentido, char color, int pasos) {
         boolean pudoMover = true;
 
@@ -480,15 +503,24 @@ public class Tablero {
     
     public String prepararTablero(char[][] matriz) {
     String resultado = "";
-    
+
+    // Encabezado con números de columna
+    resultado += "   ";
+    for (int col = 0; col < 10; col = col + 1) {
+        resultado += "  " + col + " ";
+    }
+    resultado += "\n";
+
     for (int fila = 0; fila < 8; fila = fila + 1) {
         // línea de separación
+        resultado += "   ";
         for (int col = 0; col < 10; col = col + 1) {
             resultado += "+---";
         }
         resultado += "+\n";
-        
-        // contenido
+
+        // contenido (con número de fila a la izquierda)
+        resultado += " " + fila + " ";
         for (int col = 0; col < 10; col = col + 1) {
             char celda = matriz[fila][col];
             if (celda == VACIO) {
@@ -499,13 +531,14 @@ public class Tablero {
         }
         resultado += "|\n";
     }
-    
+
     // última línea
+    resultado += "   ";
     for (int col = 0; col < 10; col = col + 1) {
         resultado += "+---";
     }
     resultado += "+\n";
-    
+
     return resultado;
 }
     public char[][] clonarMatriz(char[][] origen) {
@@ -517,4 +550,9 @@ public class Tablero {
     }
     return copia;
 }
+    
+    public char[][] getMatriz() {
+       return tablero;
+}
+
 }
