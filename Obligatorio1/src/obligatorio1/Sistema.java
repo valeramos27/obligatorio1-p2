@@ -282,10 +282,10 @@ private void mostrarDetalleTesteo(Testeo testeo) {
         // Caso 2: validarMovimientoIndividual
         private String[] ejecutarCaso2(Scanner in) {
             char color = this.pedirColor(in);
-            String sentido = this.pedirSentido(in, true); // 8 sentidos permitidos
-            int fila = this.pedirEntero(in, "Ingrese la fila (0-7): ", 0, 7);
-            int col = this.pedirEntero(in, "Ingrese la columna (0-9): ", 0, 9);
-            int pasos = this.pedirEntero(in, "Ingrese la cantidad de pasos: ", 1, 10);
+            String sentido = this.pedirSentido(in, true);
+            int fila = this.pedirEntero(in, "Ingrese la fila de la ficha a mover (0-7): ", 0, 7);
+            int col = this.pedirEntero(in, "Ingrese la columna de la ficha a mover (0-9): ", 0, 9);
+            int pasos = this.pedirEntero(in, "Ingrese la cantidad de pasos a desplazar: ", 1, 10);
 
             boolean ok = this.tablero.moverFicha(fila, col, sentido, color, pasos);
 
@@ -299,11 +299,19 @@ private void mostrarDetalleTesteo(Testeo testeo) {
         private String[] ejecutarCaso3(Scanner in) {
             char color = this.pedirColor(in);
             String forma = this.pedirForma(in);
-            String sentido = this.pedirSentido(in, false); // solo N, S, E, O
-            int fila = this.pedirEntero(in, "Ingrese la fila del extremo (0-7): ", 0, 7);
-            int col = this.pedirEntero(in, "Ingrese la columna del extremo (0-9): ", 0, 9);
-            int tam = this.pedirEntero(in, "Ingrese el tamaño del grupo: ", 1, 10);
-            int pasos = this.pedirEntero(in, "Ingrese la cantidad de pasos: ", 1, 10);
+            String sentido = this.pedirSentido(in, false);
+
+            // Mensaje explicativo segun la forma elegida
+            if (forma.equals("H")) {
+                System.out.println("(El grupo es horizontal: indique la posicion de la ficha mas al OESTE)");
+            } else {
+                System.out.println("(El grupo es vertical: indique la posicion de la ficha mas al NORTE)");
+            }
+
+            int fila = this.pedirEntero(in, "Ingrese la fila de la ficha extremo (0-7): ", 0, 7);
+            int col = this.pedirEntero(in, "Ingrese la columna de la ficha extremo (0-9): ", 0, 9);
+            int tam = this.pedirEntero(in, "Ingrese la cantidad de fichas del grupo: ", 1, 10);
+            int pasos = this.pedirEntero(in, "Ingrese la cantidad de pasos a desplazar: ", 1, 10);
 
             boolean ok = this.tablero.moverGrupo(fila, col, tam, forma, sentido, color, pasos);
 
@@ -368,24 +376,61 @@ private void mostrarDetalleTesteo(Testeo testeo) {
         }
 
         private String pedirForma(Scanner in) {
-            System.out.print("Ingrese la forma del grupo (H: horizontal / V: vertical): ");
+            System.out.print("Ingrese la forma del grupo (H: fichas en fila / V: fichas en columna): ");
             String entrada = in.next().toUpperCase();
             while (!entrada.equals("H") && !entrada.equals("V")) {
-                System.out.print("Forma invalida. Ingrese H o V: ");
+                System.out.print("Forma invalida. Ingrese H (fila horizontal) o V (columna vertical): ");
                 entrada = in.next().toUpperCase();
             }
             return entrada;
-        }
+}
 
         private int pedirEntero(Scanner in, String mensaje, int min, int max) {
             System.out.print(mensaje);
-            int valor = in.nextInt();
-            while (valor < min || valor > max) {
-                System.out.print("Valor invalido. Debe estar entre " + min + " y " + max + ". " + mensaje);
-                valor = in.nextInt();
+            int valor = 0;
+            boolean valido = false;
+
+            while (!valido) {
+        String entrada = in.next();
+
+        // 1. Validar que todos los caracteres sean digitos
+        boolean esNumero = true;
+        if (entrada.length() == 0) {
+            esNumero = false;
+        } else {
+            int i = 0;
+            while (i < entrada.length() && esNumero) {
+                char c = entrada.charAt(i);
+                if (c < '0' || c > '9') {
+                    esNumero = false;
+                }
+                i = i + 1;
             }
-            return valor;
         }
+
+        if (!esNumero) {
+            System.out.print("Entrada invalida (\"" + entrada + "\"). Debe ser un numero entre " + min + " y " + max + ". " + mensaje);
+        } else {
+            // 2. Convertir a entero manualmente
+            valor = 0;
+            int i = 0;
+            while (i < entrada.length()) {
+                int digito = entrada.charAt(i) - '0';
+                valor = valor * 10 + digito;
+                i = i + 1;
+            }
+
+            // 3. Validar rango
+            if (valor >= min && valor <= max) {
+                valido = true;
+            } else {
+                System.out.print("Valor invalido. Debe estar entre " + min + " y " + max + ". " + mensaje);
+            }
+        }
+    }
+
+    return valor;
+}
     
 
     // Opcion 4
