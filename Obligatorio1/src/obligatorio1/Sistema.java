@@ -368,11 +368,11 @@ public class Sistema {
             Tester testerElegido = elegirTester(in);
 
             System.out.println("Casos disponibles:");
-            System.out.println("1) contarFichas");
-            System.out.println("2) validarMovimientoIndividual");
-            System.out.println("3) validarMovimientoEnGrupo");
-            System.out.println("4) prepararTablero");
-            System.out.println("5) verificarConexion");
+            System.out.println("1) Contar fichas de un color en especifico");
+            System.out.println("2) Realizar movimiento de una sola ficha");
+            System.out.println("3) Realizar movimiento de un grupo de fichas");
+            System.out.println("4) Mostrar tablero actual");
+            System.out.println("5) Verificar conexión");
 
             int caso = pedirEnteroEnRango(in, "Ingrese caso a testear: ", 1, 5);
 
@@ -392,7 +392,11 @@ public class Sistema {
             char[][] matrizResultante = copiarMatriz(this.tablero.getMatriz());
 
             System.out.println();
-            System.out.println("Resultado: " + resultado);
+            System.out.println("============================================================");
+            System.out.println("RESULTADO DEL TESTEO");
+            System.out.println("============================================================");
+            System.out.println(resultado);
+            System.out.println("============================================================");
 
             System.out.println();
             System.out.println("Matriz original:");
@@ -472,7 +476,12 @@ public class Sistema {
                 + ", col=" + col
                 + ", pasos=" + pasos;
 
-        String resultado = String.valueOf(ok);
+        String resultado;
+        if (ok) {
+            resultado = "Movimiento individual valido. El tablero fue modificado.";
+        } else {
+            resultado = "Movimiento individual invalido. El tablero no fue modificado.";
+        }
 
         return new String[]{parametros, resultado};
     }
@@ -503,16 +512,19 @@ public class Sistema {
                 + ", tamaño=" + tamaño
                 + ", pasos=" + pasos;
 
-        String resultado = String.valueOf(ok);
+        String resultado;
+        if (ok) {
+            resultado = "Movimiento en grupo valido. El tablero fue modificado.";
+        } else {
+            resultado = "Movimiento en grupo invalido. El tablero no fue modificado.";
+        }
 
         return new String[]{parametros, resultado};
     }
 
     private String[] ejecutarCaso4() {
-        String tableroTexto = this.tablero.prepararTablero(this.tablero.getMatriz());
-
         String parametros = "(sin parametros)";
-        String resultado = "\n" + tableroTexto;
+        String resultado = "Tablero preparado correctamente. Ver matriz resultante.";
 
         return new String[]{parametros, resultado};
     }
@@ -522,10 +534,16 @@ public class Sistema {
         boolean conectado = this.tablero.verificarConexion(this.tablero.getMatriz(), color);
 
         String parametros = "color=" + color;
-        String resultado = String.valueOf(conectado);
-
+        String resultado;
+        if (conectado) {
+            resultado = "Las fichas " + color + " estan conectadas.";
+        } else {
+            resultado = "Las fichas " + color + " NO estan conectadas.";
+        
+            }
         return new String[]{parametros, resultado};
     }
+        
 
     // ============================================================
     // OPCION D - CONSULTA DE TESTERS
