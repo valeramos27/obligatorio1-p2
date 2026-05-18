@@ -33,41 +33,14 @@ public class Tester implements Comparable<Tester> {
         return experiencia;
     }
 
-    public ArrayList<Testeo> getListaTesteos() {
-        ArrayList<Testeo> copia = new ArrayList<Testeo>(this.listaTesteos);
-        return copia;
-    }
-
     public int getCantidadTesteos() {
         int cantidad = this.listaTesteos.size();
         return cantidad;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public void setEdad(int edad) {
-        this.edad = edad;
-    }
-
-    public void setExperiencia(int experiencia) {
-        this.experiencia = experiencia;
-    }
-
-    public void setListaTesteos(ArrayList<Testeo> listaTesteos) {
-        if (listaTesteos == null) {
-            this.listaTesteos = new ArrayList<Testeo>();
-        } else {
-            this.listaTesteos = new ArrayList<Testeo>(listaTesteos);
-        }
-    }
-
     public void agregarTesteo(Testeo unTesteo) {
-        if (unTesteo != null) {
-            this.listaTesteos.add(unTesteo);
-        }
-    }
+    this.listaTesteos.add(unTesteo);
+}
 
     public ArrayList<Testeo> getTesteosOrdenados() {
         ArrayList<Testeo> copia = new ArrayList<Testeo>(this.listaTesteos);

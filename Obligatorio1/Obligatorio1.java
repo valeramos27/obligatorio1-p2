@@ -22,7 +22,7 @@ public class Obligatorio1 {
         String opcion = "";
         while (!opcion.equals("6")) {
             mostrarMenu();
-            opcion = in.next().toLowerCase();
+            opcion = in.nextLine().trim().toLowerCase();
 
             switch (opcion) {
                 case "1":
@@ -52,6 +52,7 @@ public class Obligatorio1 {
         in.close();
     }
 
+    // Muestra las opciones del menu disponibles del sistema
     private static void mostrarMenu() {
         System.out.println();
         System.out.println("------------------------------");
