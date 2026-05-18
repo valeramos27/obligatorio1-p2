@@ -21,9 +21,7 @@ public class Tablero {
         cargarPorDefecto();
     }
 
-    // ============================================================
-    // MÉTODOS AUXILIARES GENERALES
-    // ============================================================
+
 
     private boolean posicionValida(int fila, int columna) {
         boolean valida = true;
@@ -35,7 +33,7 @@ public class Tablero {
         return valida;
     }
 
-    private boolean colorValido(char color) {
+    private boolean colorValido(char color) { //Me ayuda a ver si el color es valido para el juego
         boolean valido = false;
 
         if (color == BLANCA || color == NEGRA) {
@@ -55,12 +53,13 @@ public class Tablero {
         return valida;
     }
 
-    private char normalizarColor(char color) {
+    
+    private char normalizarColor(char color) {  //Para que el programa acepta mayusculas o minusculas 
         char resultado = Character.toUpperCase(color);
         return resultado;
     }
 
-    private String normalizarTexto(String texto) {
+    private String normalizarTexto(String texto) { 
         String resultado = "";
 
         if (texto != null) {
@@ -70,16 +69,16 @@ public class Tablero {
         return resultado;
     }
 
-    private boolean matrizConFormatoValido(char[][] matriz) {
+    private boolean matrizConFormatoValido(char[][] matriz) { //Verifica si la matriz tiene el tamaño correcto
         boolean valida = true;
-
+        //Controlo que la matriz exista y ademas que tenga 8 filas 
         if (matriz == null || matriz.length != FILAS) {
             valida = false;
         } else {
             int fila = 0;
 
-            while (fila < FILAS && valida) {
-                if (matriz[fila] == null || matriz[fila].length != COLUMNAS) {
+            while (fila < FILAS && valida) {//las recorro 
+                if (matriz[fila] == null || matriz[fila].length != COLUMNAS) {//Verifico que la fila exista y que tenga 10 columnas
                     valida = false;
                 }
 
@@ -94,11 +93,11 @@ public class Tablero {
         boolean valida = matrizConFormatoValido(matriz);
 
         int fila = 0;
-        while (fila < FILAS && valida) {
+        while (fila < FILAS && valida) {//Mientras que no se hayan recorrido todas las filas y aun sean validas 
             int columna = 0;
 
-            while (columna < COLUMNAS && valida) {
-                if (!celdaValida(matriz[fila][columna])) {
+            while (columna < COLUMNAS && valida) {//Mientras que no se hayan recorrido todas las columnas y aun sean validas 
+                if (!celdaValida(matriz[fila][columna])) {//Y si la actual no es valida 
                     valida = false;
                 }
 
@@ -152,7 +151,7 @@ public class Tablero {
         return valida;
     }
 
-    private boolean direccionValidaParaGrupo(String sentido, char color) {
+    private boolean direccionValidaParaGrupo(String sentido, char color) {//No permite diagonales
         boolean valida = false;
 
         if (color == BLANCA) {
@@ -173,7 +172,7 @@ public class Tablero {
     private boolean formaValida(String forma) {
         boolean valida = false;
 
-        if (forma.equals("H") || forma.equals("V")) {
+        if (forma.equals("H") || forma.equals("V")) { //Pregunto si es horizontal o vertical
             valida = true;
         }
 
@@ -183,11 +182,11 @@ public class Tablero {
     private boolean formaCompatibleConDireccion(String forma, String sentido) {
         boolean compatible = false;
 
-        if (forma.equals("H")) {
+        if (forma.equals("H")) {//Si el grupoo esta en forma horizontal
             if (sentido.equals("N") || sentido.equals("S")) {
                 compatible = true;
             }
-        } else {
+        } else { //Un grupo vertical solo puede moverse horizontalmente
             if (forma.equals("V")) {
                 if (sentido.equals("E") || sentido.equals("O")) {
                     compatible = true;
@@ -205,15 +204,15 @@ public class Tablero {
             case "N":
             case "NE":
             case "NO":
-                desplazamiento = -1;
+                desplazamiento = -1; //si va hacia el norte la fila disminuye
                 break;
             case "S":
             case "SE":
             case "SO":
-                desplazamiento = 1;
+                desplazamiento = 1; //si va hacia el sur la fila aumenta 
                 break;
             default:
-                desplazamiento = 0;
+                desplazamiento = 0; //en las otras opciones no cambia
                 break;
         }
 
@@ -227,12 +226,12 @@ public class Tablero {
             case "E":
             case "NE":
             case "SE":
-                desplazamiento = 1;
+                desplazamiento = 1;//si va hacia el este la columna aumenta
                 break;
             case "O":
             case "NO":
             case "SO":
-                desplazamiento = -1;
+                desplazamiento = -1;//si va hacia el oeste la columna disminuye 
                 break;
             default:
                 desplazamiento = 0;
@@ -242,9 +241,8 @@ public class Tablero {
         return desplazamiento;
     }
 
-    // ============================================================
-    // CARGA Y CONSULTA DEL TABLERO
-    // ============================================================
+    /* CARGA Y CONSULTA DEL TABLERO*/
+   
 
     public void cargarPorDefecto() {
         String[] filas = {
@@ -261,10 +259,10 @@ public class Tablero {
         cargarMatriz(filas);
     }
 
-    public boolean cargarMatriz(String[] filas) {
+    public boolean cargarMatriz(String[] filas) { //Recibe un array de tecto que representa una fila del tablero 
         boolean cargo = true;
-
-        if (filas == null || filas.length != FILAS) {
+ 
+        if (filas == null || filas.length != FILAS) {//Controlo que el array exista y tenga 8 filas
             cargo = false;
         } else {
             int fila = 0;
@@ -278,12 +276,12 @@ public class Tablero {
             }
         }
 
-        if (cargo) {
-            for (int fila = 0; fila < FILAS; fila = fila + 1) {
+        if (cargo) {//Si todas las filas son validas cargo la matriz
+            for (int fila = 0; fila < FILAS; fila = fila + 1) { //recorro filas
                 String texto = normalizarTexto(filas[fila]);
 
                 for (int columna = 0; columna < COLUMNAS; columna = columna + 1) {
-                    tablero[fila][columna] = texto.charAt(columna);
+                    tablero[fila][columna] = texto.charAt(columna); //guardo cada caracter en la matriz 
                 }
             }
         }
@@ -291,13 +289,13 @@ public class Tablero {
         return cargo;
     }
 
-    public boolean cargarMatriz(char[][] matriz) {
-        boolean cargo = matrizConCeldasValidas(matriz);
+    public boolean cargarMatriz(char[][] matriz) {//Recibo directamente una matriz ya con caracteres 
+        boolean cargo = matrizConCeldasValidas(matriz);//Controlo que tenga formato y celdas validas
 
         if (cargo) {
             for (int fila = 0; fila < FILAS; fila = fila + 1) {
                 for (int columna = 0; columna < COLUMNAS; columna = columna + 1) {
-                    tablero[fila][columna] = normalizarColor(matriz[fila][columna]);
+                    tablero[fila][columna] = normalizarColor(matriz[fila][columna]);//guardo cada celda 
                 }
             }
         }
@@ -330,19 +328,20 @@ public class Tablero {
         return copia;
     }
 
-    // ============================================================
-    // CASO 1 - CONTAR FICHAS
-    // ============================================================
+    
+    /* CASO 1 - CONTAR FICHAS
+    Recorre toda la matriz y cuenta cuantas fichas hay de un color (B o N).*/
+    
 
     public int contarFichas(char[][] matriz, char color) {
-        color = normalizarColor(color);
+        color = normalizarColor(color); //Por ejemplo si viene b, queda B
 
         int contador = 0;
 
         if (colorValido(color) && matrizConFormatoValido(matriz)) {
             for (int fila = 0; fila < FILAS; fila = fila + 1) {
                 for (int columna = 0; columna < COLUMNAS; columna = columna + 1) {
-                    if (matriz[fila][columna] == color) {
+                    if (matriz[fila][columna] == color) {//Pregunto si esa celda tiene el color que busco
                         contador = contador + 1;
                     }
                 }
@@ -352,24 +351,26 @@ public class Tablero {
         return contador;
     }
 
-    // ============================================================
-    // CASO 2 - MOVIMIENTO INDIVIDUAL
-    // ============================================================
+    /* CASO 2 - MOVIMIENTO INDIVIDUAL
+    Verifica como una ficha puede moverse*/
+   
 
     private boolean caminoLibreFicha(int fila, int columna, int df, int dc, int pasos, char color) {
+        //Me ayuda a ver si una ficha puede recorrer ese camino 
         boolean libre = true;
         int paso = 1;
 
         while (paso <= pasos && libre) {
+            //calculo la posicion a revisar
             int nuevaFila = fila + df * paso;
             int nuevaColumna = columna + dc * paso;
-
-            if (!posicionValida(nuevaFila, nuevaColumna)) {
+           
+            if (!posicionValida(nuevaFila, nuevaColumna)) {//si esta fuera del tablero
                 libre = false;
             } else {
-                if (paso < pasos) {
+                if (paso < pasos) {//si no es el ultimo paso, reviso el camino intermedio
                     if (tablero[nuevaFila][nuevaColumna] != VACIO) {
-                        libre = false;
+                        libre = false;//si hay uan ficha en el medio, no puede pasar
                     }
                 } else {
                     if (tablero[nuevaFila][nuevaColumna] == color) {
@@ -400,11 +401,11 @@ public class Tablero {
             valido = false;
         }
 
-        if (valido && pasos <= 0) {
+        if (valido && pasos <= 0) {// Si al menos hay un paso 
             valido = false;
         }
 
-        if (valido && tablero[fila][columna] != color) {
+        if (valido && tablero[fila][columna] != color) { //Que en la posicion inicial haya una ficha del color indicado
             valido = false;
         }
 
@@ -420,10 +421,11 @@ public class Tablero {
         if (valido) {
             df = desplazamientoFila(sentido);
             dc = desplazamientoColumna(sentido);
-
+            
+            //Calculo la posicion final 
             filaFinal = fila + df * pasos;
             columnaFinal = columna + dc * pasos;
-
+           
             if (!posicionValida(filaFinal, columnaFinal)) {
                 valido = false;
             }
@@ -446,9 +448,10 @@ public class Tablero {
         return pudoMover;
     }
 
-    // ============================================================
-    // CASO 3 - MOVIMIENTO EN GRUPO
-    // ============================================================
+    
+    /* CASO 3 - MOVIMIENTO EN GRUPO
+    Verifica si un grupo de fichas alineadas puede moverse junto.*/
+    
 
     private boolean esParteDelGrupo(int fila, int columna, int[] filasOrigen,
             int[] columnasOrigen, int tamano) {
@@ -457,7 +460,7 @@ public class Tablero {
         int i = 0;
 
         while (i < tamano && !esParte) {
-            if (filasOrigen[i] == fila && columnasOrigen[i] == columna) {
+            if (filasOrigen[i] == fila && columnasOrigen[i] == columna) {//pregunto si esta ficha tiene la misma fila y columna 
                 esParte = true;
             }
 
@@ -474,12 +477,12 @@ public class Tablero {
         boolean valido = true;
         int i = 0;
 
-        while (i < tamano && valido) {
+        while (i < tamano && valido) { //Recorro todas las fichas del grupo
             int filaActual = fila;
             int columnaActual = columna;
 
             if (forma.equals("H")) {
-                columnaActual = columna + i;
+                columnaActual = columna + i; 
             } else {
                 filaActual = fila + i;
             }
@@ -487,20 +490,23 @@ public class Tablero {
             if (!posicionValida(filaActual, columnaActual)) {
                 valido = false;
             } else {
-                if (tablero[filaActual][columnaActual] != color) {
+                if (tablero[filaActual][columnaActual] != color) { 
                     valido = false;
                 }
             }
 
             if (valido) {
+                //Calculo donde terminaria esa ficha
                 int filaDestino = filaActual + df * pasos;
                 int columnaDestino = columnaActual + dc * pasos;
 
-                if (!posicionValida(filaDestino, columnaDestino)) {
+                if (!posicionValida(filaDestino, columnaDestino)) {//si el destino esta dentro del tablero
                     valido = false;
                 } else {
+                    //guardo la fila y columna original
                     filasOrigen[i] = filaActual;
                     columnasOrigen[i] = columnaActual;
+                    //guardo la fila y columna destino
                     filasFinal[i] = filaDestino;
                     columnasFinal[i] = columnaDestino;
                 }
@@ -521,13 +527,13 @@ public class Tablero {
         while (i < tamano && libre) {
             int paso = 1;
 
-            while (paso <= pasos && libre) {
+            while (paso <= pasos && libre) { 
                 int nuevaFila = filasOrigen[i] + df * paso;
                 int nuevaColumna = columnasOrigen[i] + dc * paso;
 
                 if (!posicionValida(nuevaFila, nuevaColumna)) {
                     libre = false;
-                } else {
+                } else {//Chequeo si esa posicion no pertenece a un grupo ya que pueden pisarse
                     if (!esParteDelGrupo(nuevaFila, nuevaColumna, filasOrigen,
                             columnasOrigen, tamano)
                             && tablero[nuevaFila][nuevaColumna] != VACIO) {
@@ -546,11 +552,12 @@ public class Tablero {
 
     private void aplicarMovimientoGrupo(int[] filasOrigen, int[] columnasOrigen,
             int[] filasFinal, int[] columnasFinal, int tamano, char color) {
-
+        
+        //Borro todas las posiciones originales
         for (int i = 0; i < tamano; i = i + 1) {
             tablero[filasOrigen[i]][columnasOrigen[i]] = VACIO;
         }
-
+        //Coloco las nuevas 
         for (int i = 0; i < tamano; i = i + 1) {
             tablero[filasFinal[i]][columnasFinal[i]] = color;
         }
@@ -592,6 +599,7 @@ public class Tablero {
         int df = 0;
         int dc = 0;
 
+        //Guardo posiciones
         int[] filasOrigen = new int[0];
         int[] columnasOrigen = new int[0];
         int[] filasFinal = new int[0];
@@ -630,9 +638,8 @@ public class Tablero {
         return pudoMover;
     }
 
-    // ============================================================
-    // CASO 4 - PREPARAR TABLERO
-    // ============================================================
+  
+    /* CASO 4 - PREPARAR TABLERO*/
 
     public String prepararTablero(char[][] matriz) {
         String resultado = "";
@@ -683,9 +690,10 @@ public class Tablero {
         return resultado;
     }
 
-    // ============================================================
-    // CASO 5 - VERIFICAR CONEXIÓN
-    // ============================================================
+    
+    /*CASO 5 - VERIFICAR CONEXIÓN
+    Verifica si todas las fichas de un color están conectadas entre sí.*/
+    
 
     public boolean verificarConexion(char color) {
         boolean conectadas = verificarConexion(tablero, color);
@@ -696,9 +704,10 @@ public class Tablero {
         color = normalizarColor(color);
 
         boolean conectadas = false;
-        boolean[][] visitado = new boolean[FILAS][COLUMNAS];
+        boolean[][] visitado = new boolean[FILAS][COLUMNAS]; //Creo una matriz para marcar que posiciones ya reviso
 
         int totalColor = 0;
+        //Suponiendo que no encontre ninguna ficha:
         int filaInicio = -1;
         int columnaInicio = -1;
 
@@ -718,7 +727,9 @@ public class Tablero {
 
             if (totalColor > 0) {
                 int cantidadVisitadas = contarConectadas(matriz, filaInicio,
-                        columnaInicio, color, visitado);
+                                        columnaInicio, color, visitado);
+                                        /*cuantas fichas del mismo color estan conectadas
+                                        desde la primera ficha*/
 
                 if (cantidadVisitadas == totalColor) {
                     conectadas = true;
@@ -729,28 +740,41 @@ public class Tablero {
         return conectadas;
     }
 
-    private int contarConectadas(char[][] matriz, int fila, int columna,
-            char color, boolean[][] visitado) {
+    private int contarConectadas(char[][] matriz, int filaInicio, int columnaInicio,
+                                 char color, boolean[][] visitado) {
 
         int cantidad = 0;
 
-        if (!posicionValida(fila, columna)) {
-            cantidad = 0;
-        } else {
-            if (visitado[fila][columna]) {
-                cantidad = 0;
-            } else {
-                if (matriz[fila][columna] != color) {
-                    cantidad = 0;
-                } else {
-                    visitado[fila][columna] = true;
-                    cantidad = 1;
+        int[] filasPendientes = new int[FILAS * COLUMNAS];
+        int[] columnasPendientes = new int[FILAS * COLUMNAS];
 
-                    for (int df = -1; df <= 1; df = df + 1) {
-                        for (int dc = -1; dc <= 1; dc = dc + 1) {
-                            if (!(df == 0 && dc == 0)) {
-                                cantidad = cantidad + contarConectadas(matriz,
-                                        fila + df, columna + dc, color, visitado);
+        int inicio = 0;
+        int fin = 0;
+        
+        //Agrego la posicion inicial a revisar 
+        filasPendientes[fin] = filaInicio;
+        columnasPendientes[fin] = columnaInicio;
+        fin = fin + 1;
+
+        while (inicio < fin) {
+            int fila = filasPendientes[inicio];
+            int columna = columnasPendientes[inicio];
+            inicio = inicio + 1;
+            
+               if (posicionValida(fila, columna)) {
+                if (!visitado[fila][columna]) {
+                    if (matriz[fila][columna] == color) {
+
+                        visitado[fila][columna] = true;
+                        cantidad = cantidad + 1;
+
+                        for (int df = -1; df <= 1; df = df + 1) {//Recorro las posiciones vecinas 
+                            for (int dc = -1; dc <= 1; dc = dc + 1) {
+                                if (!(df == 0 && dc == 0)) {//Evito que se agregue a si misma                                      
+                                    filasPendientes[fin] = fila + df;
+                                    columnasPendientes[fin] = columna + dc;
+                                    fin = fin + 1;
+                                }
                             }
                         }
                     }

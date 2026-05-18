@@ -11,18 +11,18 @@ import java.util.Scanner;
 public class Sistema {
   
     
-    //CONSTANTES (dimensiones de la matriz)
+    /*CONSTANTES (dimensiones de la matriz)*/
     private static final int FILAS = 8;
     private static final int COLUMNAS = 10;
     
-    // ATRIBUTOS
+    /* ATRIBUTOS*/
     private ArrayList<Tester> listaTesters;
     private Tablero tablero;
     private int proximoNumeroTesteo; //contador para asignar números únicos a cada testeo nuevo
 
-    //CONSTRUCTOR
-    //Inicializa la lista de testers vacia, se crea el tablero 
-    //se carga la matriz por defecto e inicializa la lista de testeos con numero 1
+    /*CONSTRUCTOR
+    Inicializa la lista de testers vacia, se crea el tablero 
+    se carga la matriz por defecto e inicializa la lista de testeos con numero 1*/
        
     public Sistema() {
         this.listaTesters = new ArrayList<Tester>();
@@ -31,14 +31,15 @@ public class Sistema {
         this.proximoNumeroTesteo = 1; 
     }
 
-    //GETTERS
+    /*GETTERS*/
+    
     public ArrayList<Tester> getListaTesters() {
         return listaTesters;
     }
     public Tablero getTablero() {
         return tablero;
     }
-    //METODOS DE BUSQUEDA DE TESTERS
+    /*METODOS DE BUSQUEDA DE TESTERS*/
     public Tester buscarTesterPorNombre(String nombre) {
         Tester encontrado = null;
         int i = 0;
@@ -63,7 +64,7 @@ public class Sistema {
         return listaOrdenada;
     }
 
-    // METODOS AUXILIARES DE INGRESO POR CONSOLA
+    /* METODOS AUXILIARES DE INGRESO POR CONSOLA*/
     
     private String pedirTextoNoVacio(Scanner in, String mensaje) {
         String texto = "";
@@ -207,7 +208,7 @@ public class Sistema {
         return sentido;
     }
 
-    // METODOS AUXILIARES DE MATRIZ
+    /* METODOS AUXILIARES DE MATRIZ*/
 
     //Valida que la fila ingresada por consola tenga 10 caracteres y sean B, N o V
     private boolean filaIngresadaValida(String fila) {
@@ -265,7 +266,7 @@ public class Sistema {
         return copia;
     }
 
-    // METODOS AUXILIARES DE TESTERS Y TESTEOS
+    /* METODOS AUXILIARES DE TESTERS Y TESTEOS*/
 
     private Tester elegirTester(Scanner in) {
         ArrayList<Tester> ordenados = this.obtenerTestersOrdenadosPorNombre();
@@ -319,7 +320,8 @@ public class Sistema {
         System.out.println(nuevo);
     }
 
-    // OPCION B - REGISTRAR MATRIZ
+    /* OPCION B - REGISTRAR MATRIZ*/
+    
     public void registrarMatriz(Scanner in) {
         System.out.println("Matriz actual:");
         System.out.println(this.tablero.prepararTablero(this.tablero.getMatriz()));
@@ -356,8 +358,9 @@ public class Sistema {
         }
     }
 
-    // OPCION C - REGISTRAR TESTEO
-    //Se guarda una foto de la matriz antes y despues de ejecutar el caso de prueba
+    /* OPCION C - REGISTRAR TESTEO
+    Se guarda una foto de la matriz antes y despues de ejecutar el caso de prueba*/
+    
     public void registrarTesteo(Scanner in) {
         if (this.listaTesters.isEmpty()) {
             System.out.println("No hay testers registrados.");
@@ -543,9 +546,8 @@ public class Sistema {
     }
         
 
-    // ============================================================
-    // OPCION D - CONSULTA DE TESTERS
-    // ============================================================
+    
+    /*OPCION D - CONSULTA DE TESTERS*/
 
     public void consultaTesters(Scanner in) {
         if (this.listaTesters.isEmpty()) {
@@ -573,7 +575,7 @@ public class Sistema {
         }
     }
 
-    // OPCION E - ESTADISTICAS
+    /* OPCION E - ESTADISTICAS*/
 
     //Primera pasada: Busca el maximo de testeos realizados
     //Segunda pasada: Se listan todos los testers que igualan ese maximo (permite empate) 
