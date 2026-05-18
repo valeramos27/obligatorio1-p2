@@ -3,7 +3,6 @@
  Valentina Ramos - 224347
  */
 
-//comentario etcetera
 package obligatorio1;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,17 +47,10 @@ public class Sistema {
         return encontrado;
     }
     public ArrayList<Tester> obtenerTestersOrdenadosPorNombre() {
-    ArrayList<Tester> copia = new ArrayList<>(this.listaTesters);
-
-    Collections.sort(copia, new java.util.Comparator<Tester>() {
-        @Override
-        public int compare(Tester tester1, Tester tester2) {
-            return tester1.getNombre().compareToIgnoreCase(tester2.getNombre());
-        }
-    });
-
-    return copia;
-}
+        ArrayList<Tester> copia = new ArrayList<>(this.listaTesters);
+        Collections.sort(copia);
+        return copia;
+    }
 
 private void mostrarDetalleTesteo(Testeo testeo) {
     System.out.println();
@@ -68,7 +60,7 @@ private void mostrarDetalleTesteo(Testeo testeo) {
     System.out.println("Tester: " + testeo.getNombreTester());
     System.out.println("Caso: " + testeo.getCaso());
     System.out.println("Parametros usados: " + testeo.getParametrosUsados());
-    System.out.println("Comentario: " + testeo.comentario());
+    System.out.println("Comentario: " + testeo.getComentario());
     System.out.println("Resultado: " + testeo.getResultado());
 
     System.out.println();
@@ -162,13 +154,10 @@ private void mostrarDetalleTesteo(Testeo testeo) {
 
     // Opcion 3
     public void registrarTesteo(Scanner in) {
-        // Opcion 3
-            // 1. Validar que haya testers
-            if (this.listaTesters.isEmpty()) {
-                System.out.println("No hay testers registrados. Registre al menos uno antes de testear.");
-                return;
-            }
-
+        // 1. Validar que haya testers
+        if (this.listaTesters.isEmpty()) {
+            System.out.println("No hay testers registrados. Registre al menos uno antes de testear.");
+        } else {
             // 2. Mostrar lista de testers y elegir
             ArrayList<Tester> testersOrdenados = this.obtenerTestersOrdenadosPorNombre();
             System.out.println("Lista de testers:");
@@ -264,6 +253,7 @@ private void mostrarDetalleTesteo(Testeo testeo) {
             this.proximoNumeroTesteo = this.proximoNumeroTesteo + 1;
 
             System.out.println("Testeo numero " + nuevo.getNumero() + " registrado correctamente.");
+            }
         }
 
         // ============================================================
@@ -385,52 +375,26 @@ private void mostrarDetalleTesteo(Testeo testeo) {
             return entrada;
 }
 
-        private int pedirEntero(Scanner in, String mensaje, int min, int max) {
-            System.out.print(mensaje);
-            int valor = 0;
-            boolean valido = false;
+       private int pedirEntero(Scanner in, String mensaje, int min, int max) {
+        System.out.print(mensaje);
 
-            while (!valido) {
-        String entrada = in.next();
+        while (!in.hasNextInt()) {
+            System.out.print("Entrada invalida. Debe ser un numero entre " + min + " y " + max + ". " + mensaje);
+            in.next();
+        }
+        int valor = in.nextInt();
 
-        // 1. Validar que todos los caracteres sean digitos
-        boolean esNumero = true;
-        if (entrada.length() == 0) {
-            esNumero = false;
-        } else {
-            int i = 0;
-            while (i < entrada.length() && esNumero) {
-                char c = entrada.charAt(i);
-                if (c < '0' || c > '9') {
-                    esNumero = false;
-                }
-                i = i + 1;
+        while (valor < min || valor > max) {
+            System.out.print("Valor invalido. Debe estar entre " + min + " y " + max + ". " + mensaje);
+            while (!in.hasNextInt()) {
+                System.out.print("Entrada invalida. " + mensaje);
+                in.next();
             }
+            valor = in.nextInt();
         }
 
-        if (!esNumero) {
-            System.out.print("Entrada invalida (\"" + entrada + "\"). Debe ser un numero entre " + min + " y " + max + ". " + mensaje);
-        } else {
-            // 2. Convertir a entero manualmente
-            valor = 0;
-            int i = 0;
-            while (i < entrada.length()) {
-                int digito = entrada.charAt(i) - '0';
-                valor = valor * 10 + digito;
-                i = i + 1;
-            }
-
-            // 3. Validar rango
-            if (valor >= min && valor <= max) {
-                valido = true;
-            } else {
-                System.out.print("Valor invalido. Debe estar entre " + min + " y " + max + ". " + mensaje);
-            }
-        }
+        return valor;
     }
-
-    return valor;
-}
     
 
     // Opcion 4
@@ -487,7 +451,7 @@ private void mostrarDetalleTesteo(Testeo testeo) {
             // 1. Validar que haya testers
             if (this.listaTesters.isEmpty()) {
                 System.out.println("No hay testers registrados.");
-                return;
+            } else {
             }
 
             // 2. Calcular el maximo de testeos realizados

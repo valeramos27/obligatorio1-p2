@@ -42,7 +42,7 @@ public class Testeo implements Comparable<Testeo> {
     public String getParametrosUsados() {
         return parametrosUsados;
     }
-    public String comentario() {
+    public String getComentario() {
         return comentario;
     }
 

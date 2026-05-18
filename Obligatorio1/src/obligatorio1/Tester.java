@@ -7,7 +7,7 @@ package obligatorio1;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class Tester {
+public class Tester implements Comparable<Tester>{
 
     private String nombre;
     private int edad;
@@ -74,5 +74,9 @@ public class Tester {
         return "Tester: " + this.nombre +
                "- Edad: " + this.edad +
                "- Experiencia: " + this.experiencia + "años";
+    }
+     @Override
+    public int compareTo(Tester otro) {
+        return this.nombre.compareToIgnoreCase(otro.getNombre());
     }
 }
