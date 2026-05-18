@@ -5,33 +5,40 @@
 package obligatorio1;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Collections; // Lo usamos para ordenar las listas
 import java.util.Scanner;
 
 public class Sistema {
-
+  
+    
+    //CONSTANTES (dimensiones de la matriz)
     private static final int FILAS = 8;
     private static final int COLUMNAS = 10;
-
+    
+    // ATRIBUTOS
     private ArrayList<Tester> listaTesters;
     private Tablero tablero;
-    private int proximoNumeroTesteo;
+    private int proximoNumeroTesteo; //contador para asignar números únicos a cada testeo nuevo
 
+    //CONSTRUCTOR
+    //Inicializa la lista de testers vacia, se crea el tablero 
+    //se carga la matriz por defecto e inicializa la lista de testeos con numero 1
+       
     public Sistema() {
         this.listaTesters = new ArrayList<Tester>();
         this.tablero = new Tablero();
         this.tablero.cargarPorDefecto();
-        this.proximoNumeroTesteo = 1;
+        this.proximoNumeroTesteo = 1; 
     }
 
+    //GETTERS
     public ArrayList<Tester> getListaTesters() {
         return listaTesters;
     }
-
     public Tablero getTablero() {
         return tablero;
     }
-
+    //METODOS DE BUSQUEDA DE TESTERS
     public Tester buscarTesterPorNombre(String nombre) {
         Tester encontrado = null;
         int i = 0;
@@ -48,17 +55,16 @@ public class Sistema {
 
         return encontrado;
     }
-
+    
+    //Se trabaja sobre una copia para no alterar el orden original de la lista de testers
     public ArrayList<Tester> obtenerTestersOrdenadosPorNombre() {
         ArrayList<Tester> listaOrdenada = new ArrayList<Tester>(this.listaTesters);
-        Collections.sort(listaOrdenada);
+        Collections.sort(listaOrdenada); //Tester implementa Comparable<Tester> asi que compara por nombre
         return listaOrdenada;
     }
 
-    // ============================================================
-    // METODOS AUXILIARES DE INGRESO
-    // ============================================================
-
+    // METODOS AUXILIARES DE INGRESO POR CONSOLA
+    
     private String pedirTextoNoVacio(Scanner in, String mensaje) {
         String texto = "";
 
@@ -81,12 +87,14 @@ public class Sistema {
         while (!correcto) {
             System.out.print(mensaje);
 
-            try {
-                numero = Integer.parseInt(in.nextLine().trim());
+            if (in.hasNextInt()) {
+                numero = in.nextInt();
                 correcto = true;
-            } catch (NumberFormatException e) {
-                System.out.println("Debe ingresar un numero entero.");
+            } else {
+                System.out.println("Debe ingresar un numero entero");
             }
+
+            in.nextLine();
         }
 
         return numero;
@@ -96,7 +104,7 @@ public class Sistema {
         int numero = pedirEntero(in, mensaje);
 
         while (numero < minimo || numero > maximo) {
-            System.out.println("Valor invalido. Debe estar entre " + minimo + " y " + maximo + ".");
+            System.out.println("Valor invalido. Debe estar entre " + minimo + " y " + maximo);
             numero = pedirEntero(in, mensaje);
         }
 
@@ -107,7 +115,7 @@ public class Sistema {
         int numero = pedirEntero(in, mensaje);
 
         while (numero < minimo) {
-            System.out.println("Valor invalido. Debe ser mayor o igual a " + minimo + ".");
+            System.out.println("Valor invalido. Debe ser mayor o igual a " + minimo);
             numero = pedirEntero(in, mensaje);
         }
 
@@ -137,7 +145,7 @@ public class Sistema {
             color = in.nextLine().trim().toUpperCase();
 
             if (!color.equals("B") && !color.equals("N")) {
-                System.out.println("Color invalido.");
+                System.out.println("Color invalido");
             }
         }
 
@@ -152,7 +160,7 @@ public class Sistema {
             forma = in.nextLine().trim().toUpperCase();
 
             if (!forma.equals("H") && !forma.equals("V")) {
-                System.out.println("Forma invalida.");
+                System.out.println("Forma invalida");
             }
         }
 
@@ -192,17 +200,16 @@ public class Sistema {
             valido = sentidoValido(sentido, permiteDiagonales);
 
             if (!valido) {
-                System.out.println("Sentido invalido.");
+                System.out.println("Sentido invalido");
             }
         }
 
         return sentido;
     }
 
-    // ============================================================
     // METODOS AUXILIARES DE MATRIZ
-    // ============================================================
 
+    //Valida que la fila ingresada por consola tenga 10 caracteres y sean B, N o V
     private boolean filaIngresadaValida(String fila) {
         boolean valida = true;
         String texto = fila.trim().toUpperCase();
@@ -239,7 +246,7 @@ public class Sistema {
             valida = filaIngresadaValida(fila);
 
             if (!valida) {
-                System.out.println("Fila invalida. Debe tener 10 caracteres y usar solo B, N o V.");
+                System.out.println("Fila invalida. Debe tener 10 caracteres y usar solo B, N o V");
             }
         }
 
@@ -258,9 +265,7 @@ public class Sistema {
         return copia;
     }
 
-    // ============================================================
     // METODOS AUXILIARES DE TESTERS Y TESTEOS
-    // ============================================================
 
     private Tester elegirTester(Scanner in) {
         ArrayList<Tester> ordenados = this.obtenerTestersOrdenadosPorNombre();
@@ -294,10 +299,8 @@ public class Sistema {
         System.out.println(this.tablero.prepararTablero(testeo.getMatrizResultante()));
     }
 
-    // ============================================================
-    // OPCION A - REGISTRAR TESTER
-    // ============================================================
-
+    
+    // OPCION A - REGISTRAR TESTER  
     public void registrarTester(Scanner in) {
         String nombre = pedirTextoNoVacio(in, "Ingrese nombre del tester: ");
 
@@ -316,10 +319,7 @@ public class Sistema {
         System.out.println(nuevo);
     }
 
-    // ============================================================
     // OPCION B - REGISTRAR MATRIZ
-    // ============================================================
-
     public void registrarMatriz(Scanner in) {
         System.out.println("Matriz actual:");
         System.out.println(this.tablero.prepararTablero(this.tablero.getMatriz()));
@@ -356,10 +356,8 @@ public class Sistema {
         }
     }
 
-    // ============================================================
     // OPCION C - REGISTRAR TESTEO
-    // ============================================================
-
+    //Se guarda una foto de la matriz antes y despues de ejecutar el caso de prueba
     public void registrarTesteo(Scanner in) {
         if (this.listaTesters.isEmpty()) {
             System.out.println("No hay testers registrados.");
@@ -376,7 +374,7 @@ public class Sistema {
 
             int caso = pedirEnteroEnRango(in, "Ingrese caso a testear: ", 1, 5);
 
-            System.out.print("Ingrese comentario (ENTER para omitir): ");
+            System.out.print("Ingrese comentario (Opcional. Enter para omitir): ");
             String comentario = in.nextLine();
 
             if (comentario.trim().isEmpty()) {
@@ -575,10 +573,10 @@ public class Sistema {
         }
     }
 
-    // ============================================================
     // OPCION E - ESTADISTICAS
-    // ============================================================
 
+    //Primera pasada: Busca el maximo de testeos realizados
+    //Segunda pasada: Se listan todos los testers que igualan ese maximo (permite empate) 
     public void mostrarEstadisticas() {
         if (this.listaTesters.isEmpty()) {
             System.out.println("No hay testers registrados.");
@@ -625,7 +623,7 @@ public class Sistema {
             }
 
             if (!haySinTesteos) {
-                System.out.println("(no hay)");
+                System.out.println("(No hay testers sin testeos)");
             }
 
             System.out.println("------------------------------");
