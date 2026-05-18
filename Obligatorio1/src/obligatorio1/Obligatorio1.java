@@ -11,7 +11,6 @@ import java.util.Scanner;
 public class Obligatorio1 {
 
     public static void main(String[] args) {
-        // Configuracion UTF-8 (sugerencia de la letra)
         System.setOut(new PrintStream(System.out, true, StandardCharsets.UTF_8));
 
         Scanner in = new Scanner(System.in);
@@ -20,31 +19,31 @@ public class Obligatorio1 {
         System.out.println("Trabajo desarrollado por: Aitana Alvarez (340201) y Valentina Ramos (224347)");
 
         String opcion = "";
-        while (!opcion.equals("6")) {
+        while (!opcion.equals("f")) {
             mostrarMenu();
-            opcion = in.next().toLowerCase();
+            opcion = in.nextLine().trim().toLowerCase();
 
             switch (opcion) {
-                case "1":
+                case "a":
                     sistema.registrarTester(in);
                     break;
-                case "2":
+                case "b":
                     sistema.registrarMatriz(in);
                     break;
-                case "3":
+                case "c":
                     sistema.registrarTesteo(in);
                     break;
-                case "4":
+                case "d":
                     sistema.consultaTesters(in);
                     break;
-                case "5":
+                case "e":
                     sistema.mostrarEstadisticas();
                     break;
-                case "6":
+                case "f":
                     System.out.println("Finalizado");
                     break;
                 default:
-                    System.out.println("Opcion invalida. Ingrese un numero entre '1' y '6'");
+                    System.out.println("Opcion invalida. Ingrese una opcion entre a y f.");
                     break;
             }
         }
@@ -55,12 +54,12 @@ public class Obligatorio1 {
     private static void mostrarMenu() {
         System.out.println();
         System.out.println("------------------------------");
-        System.out.println("1) Registrar tester");
-        System.out.println("2) Registrar matriz actual del juego");
-        System.out.println("3) Registrar testeo");
-        System.out.println("4) Consulta de testers");
-        System.out.println("5) Estadisticas");
-        System.out.println("6) Terminar el programa");
+        System.out.println("a) Registrar tester");
+        System.out.println("b) Registrar matriz actual del juego");
+        System.out.println("c) Registrar testeo");
+        System.out.println("d) Consulta de testers");
+        System.out.println("e) Estadisticas");
+        System.out.println("f) Terminar el programa");
         System.out.println("------------------------------");
         System.out.print("Ingrese una opcion: ");
     }

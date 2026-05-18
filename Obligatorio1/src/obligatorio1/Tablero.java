@@ -4,481 +4,753 @@
  */
 
 package obligatorio1;
-import java.util.Scanner;
 
 public class Tablero {
 
-//ARMAR EL TABLERO VACIO     
     private char[][] tablero;
+
     public static final char BLANCA = 'B';
     public static final char NEGRA = 'N';
     public static final char VACIO = 'V';
-    
-    //Constructor
+
+    private static final int FILAS = 8;
+    private static final int COLUMNAS = 10;
+
     public Tablero() {
-        tablero = new char[8][10];
-        inicializar();
+        tablero = new char[FILAS][COLUMNAS];
+        cargarPorDefecto();
     }
 
-    private void inicializar() {
-        for (int fila = 0; fila < 8; fila = fila + 1) {
-            for (int columna = 0; columna < 10; columna = columna + 1) {
-                tablero[fila][columna] = VACIO;
-            }
-    }
+    // ============================================================
+    // MÉTODOS AUXILIARES GENERALES
+    // ============================================================
 
-    }
+    private boolean posicionValida(int fila, int columna) {
+        boolean valida = true;
 
-    public void mostrar() {
-    // Encabezado con números de columna
-    System.out.print("   ");  // espacio para alinear con el número de fila
-    for (int col = 0; col < 10; col = col + 1) {
-        System.out.print("  " + col + " ");
-    }
-    System.out.println();
-
-    for (int fila = 0; fila < 8; fila = fila + 1) {
-        // línea de separación
-        System.out.print("   ");  // espacio para la columna de números de fila
-        for (int col = 0; col < 10; col = col + 1) {
-            System.out.print("+---");
+        if (fila < 0 || fila >= FILAS || columna < 0 || columna >= COLUMNAS) {
+            valida = false;
         }
-        System.out.println("+");
 
-        // contenido (con número de fila a la izquierda)
-        System.out.print(" " + fila + " ");
-        for (int col = 0; col < 10; col = col + 1) {
-            char celda = tablero[fila][col];
-            if (celda == VACIO) {
-                System.out.print("|   ");
-            } else {
-                System.out.print("| " + celda + " ");
-            }
+        return valida;
+    }
+
+    private boolean colorValido(char color) {
+        boolean valido = false;
+
+        if (color == BLANCA || color == NEGRA) {
+            valido = true;
         }
-        System.out.println("|");
+
+        return valido;
     }
 
-    // última línea
-    System.out.print("   ");
-    for (int col = 0; col < 10; col = col + 1) {
-        System.out.print("+---");
-    }
-    System.out.println("+");
-}
-    
-    //CARGA DE VALORES PARA EL TABLERO POR DEFECTO 
-    public void cargarPorDefecto() {
-    for (int fila = 0; fila < 8; fila = fila + 1) {
-        for (int columna = 0; columna < 10; columna = columna + 1) {
-
-            if (fila == 0) {
-                // patron N (empieza vacio)
-                if ((columna / 2) % 2 == 1) {
-                    tablero[fila][columna] = NEGRA;
-                    } else {
-                        tablero[fila][columna] = VACIO;
-                }
-            } else {
-                if (fila == 1) {
-                    // todo N
-                    tablero[fila][columna] = NEGRA;
-                } else {
-                        if (fila == 2) {
-                            // patrón N (empieza con N)
-                            if ((columna / 2) % 2 == 1) {
-                                tablero[fila][columna] = VACIO;
-                            } else {
-                                        tablero[fila][columna] = NEGRA;
-                              }
-                        } else {
-                            if (fila == 5) {
-                                // patron B (empieza con B)
-                                if ((columna / 2) % 2 == 1) {
-                                    tablero[fila][columna] = VACIO;
-                                } else {
-                                        tablero[fila][columna] = BLANCA;
-                                  }
-                            } else {
-                                if (fila == 6) {
-                                    // todo B
-                                    tablero[fila][columna] = BLANCA;
-                                } else {
-                                    if (fila == 7) {
-                                        // patron B (empieza vacío)
-                                        if ((columna / 2) % 2 == 1) {
-                                            tablero[fila][columna] = BLANCA;
-                                        } else {
-                                                tablero[fila][columna] = VACIO;
-                                           }
-                                    } else {
-                                        // vacio
-                                        tablero[fila][columna] = VACIO;
-                                    }
-                                }
-                            }
-                        }
-                    }
-              }
-
-        }
-    }
-}
-
-    public void cargarManual(Scanner in) {
-    for (int fila = 0; fila < 8; fila = fila + 1) {
-        System.out.print("Ingrese la fila " + fila + ": ");
-        String entrada = in.next().toUpperCase();
-
+    private boolean celdaValida(char celda) {
         boolean valida = false;
-        while (!valida) {
-            if (entrada.length() != 10) {
-                System.out.print("Error. La fila debe tener exactamente 10 caracteres. Ingrese la fila " + fila + ": ");
-                entrada = in.next().toUpperCase();
-            } else {
-                // Validar que todos los caracteres sean B, N o V
-                boolean todosValidos = true;
-                int i = 0;
-                while (i < 10 && todosValidos) {
-                    char c = entrada.charAt(i);
-                    if (c != 'B' && c != 'N' && c != 'V') {
-                        todosValidos = false;
-                    }
-                    i = i + 1;
+
+        if (celda == BLANCA || celda == NEGRA || celda == VACIO) {
+            valida = true;
+        }
+
+        return valida;
+    }
+
+    private char normalizarColor(char color) {
+        char resultado = Character.toUpperCase(color);
+        return resultado;
+    }
+
+    private String normalizarTexto(String texto) {
+        String resultado = "";
+
+        if (texto != null) {
+            resultado = texto.toUpperCase();
+        }
+
+        return resultado;
+    }
+
+    private boolean matrizConFormatoValido(char[][] matriz) {
+        boolean valida = true;
+
+        if (matriz == null || matriz.length != FILAS) {
+            valida = false;
+        } else {
+            int fila = 0;
+
+            while (fila < FILAS && valida) {
+                if (matriz[fila] == null || matriz[fila].length != COLUMNAS) {
+                    valida = false;
                 }
 
-                if (!todosValidos) {
-                    System.out.print("Error. Solo se permiten caracteres B, N o V. Ingrese la fila " + fila + ": ");
-                    entrada = in.next().toUpperCase();
-                } else {
+                fila = fila + 1;
+            }
+        }
+
+        return valida;
+    }
+
+    private boolean matrizConCeldasValidas(char[][] matriz) {
+        boolean valida = matrizConFormatoValido(matriz);
+
+        int fila = 0;
+        while (fila < FILAS && valida) {
+            int columna = 0;
+
+            while (columna < COLUMNAS && valida) {
+                if (!celdaValida(matriz[fila][columna])) {
+                    valida = false;
+                }
+
+                columna = columna + 1;
+            }
+
+            fila = fila + 1;
+        }
+
+        return valida;
+    }
+
+    private boolean filaValida(String fila) {
+        boolean valida = true;
+        String texto = normalizarTexto(fila);
+
+        if (texto.length() != COLUMNAS) {
+            valida = false;
+        } else {
+            int columna = 0;
+
+            while (columna < COLUMNAS && valida) {
+                if (!celdaValida(texto.charAt(columna))) {
+                    valida = false;
+                }
+
+                columna = columna + 1;
+            }
+        }
+
+        return valida;
+    }
+
+    private boolean direccionValidaParaFicha(String sentido, char color) {
+        boolean valida = false;
+
+        if (color == BLANCA) {
+            if (sentido.equals("N") || sentido.equals("NE") || sentido.equals("NO")
+                    || sentido.equals("E") || sentido.equals("O")) {
+                valida = true;
+            }
+        } else {
+            if (color == NEGRA) {
+                if (sentido.equals("S") || sentido.equals("SE") || sentido.equals("SO")
+                        || sentido.equals("E") || sentido.equals("O")) {
                     valida = true;
                 }
             }
         }
 
-        // Cargar la fila en la matriz
-        for (int columna = 0; columna < 10; columna = columna + 1) {
-            tablero[fila][columna] = entrada.charAt(columna);
-        }
+        return valida;
     }
-}
-    public boolean moverFicha(int fila, int col, String sentido, char color, int pasos) {
-        boolean pudoMover = true;
 
-        if (fila < 0 || fila >= 8 || col < 0 || col >= 10) {
-            pudoMover = false;
+    private boolean direccionValidaParaGrupo(String sentido, char color) {
+        boolean valida = false;
+
+        if (color == BLANCA) {
+            if (sentido.equals("N") || sentido.equals("E") || sentido.equals("O")) {
+                valida = true;
+            }
         } else {
-            if (tablero[fila][col] != color) {
-                pudoMover = false;
-            }
-        }
-
-        if (pudoMover) {
-            if (color == 'B') {
-                if (!(sentido.equals("N") || sentido.equals("NE") || sentido.equals("NO")
-                        || sentido.equals("E") || sentido.equals("O"))) {
-                    pudoMover = false;
-                }
-            } else {
-                if (!(sentido.equals("S") || sentido.equals("SE") || sentido.equals("SO")
-                        || sentido.equals("E") || sentido.equals("O"))) {
-                    pudoMover = false;
+            if (color == NEGRA) {
+                if (sentido.equals("S") || sentido.equals("E") || sentido.equals("O")) {
+                    valida = true;
                 }
             }
         }
 
-        int df = 0;
-        int dc = 0;
+        return valida;
+    }
 
-        if (pudoMover) {
-            switch (sentido) {
-                case "N":
-                    df = -1;
-                    dc = 0;
-                    break;
-                case "S":
-                    df = 1;
-                    dc = 0;
-                    break;
-                case "E":
-                    df = 0;
-                    dc = 1;
-                    break;
-                case "O":
-                    df = 0;
-                    dc = -1;
-                    break;
-                case "NE":
-                    df = -1;
-                    dc = 1;
-                    break;
-                case "NO":
-                    df = -1;
-                    dc = -1;
-                    break;
-                case "SE":
-                    df = 1;
-                    dc = 1;
-                    break;
-                case "SO":
-                    df = 1;
-                    dc = -1;
-                    break;
-                default:
-                    pudoMover = false;
-                    break;
+    private boolean formaValida(String forma) {
+        boolean valida = false;
+
+        if (forma.equals("H") || forma.equals("V")) {
+            valida = true;
+        }
+
+        return valida;
+    }
+
+    private boolean formaCompatibleConDireccion(String forma, String sentido) {
+        boolean compatible = false;
+
+        if (forma.equals("H")) {
+            if (sentido.equals("N") || sentido.equals("S")) {
+                compatible = true;
+            }
+        } else {
+            if (forma.equals("V")) {
+                if (sentido.equals("E") || sentido.equals("O")) {
+                    compatible = true;
+                }
             }
         }
 
-        int filaActual = fila;
-        int colActual = col;
-        int i = 1;
+        return compatible;
+    }
 
-        while (i <= pasos && pudoMover) {
-            filaActual = filaActual + df;
-            colActual = colActual + dc;
+    private int desplazamientoFila(String sentido) {
+        int desplazamiento = 0;
 
-            if (filaActual < 0 || filaActual >= 8 || colActual < 0 || colActual >= 10) {
-                pudoMover = false;
+        switch (sentido) {
+            case "N":
+            case "NE":
+            case "NO":
+                desplazamiento = -1;
+                break;
+            case "S":
+            case "SE":
+            case "SO":
+                desplazamiento = 1;
+                break;
+            default:
+                desplazamiento = 0;
+                break;
+        }
+
+        return desplazamiento;
+    }
+
+    private int desplazamientoColumna(String sentido) {
+        int desplazamiento = 0;
+
+        switch (sentido) {
+            case "E":
+            case "NE":
+            case "SE":
+                desplazamiento = 1;
+                break;
+            case "O":
+            case "NO":
+            case "SO":
+                desplazamiento = -1;
+                break;
+            default:
+                desplazamiento = 0;
+                break;
+        }
+
+        return desplazamiento;
+    }
+
+    // ============================================================
+    // CARGA Y CONSULTA DEL TABLERO
+    // ============================================================
+
+    public void cargarPorDefecto() {
+        String[] filas = {
+            "VVNNVVNNVV",
+            "NNNNNNNNNN",
+            "NNVVNNVVNN",
+            "VVVVVVVVVV",
+            "VVVVVVVVVV",
+            "BBVVBBVVBB",
+            "BBBBBBBBBB",
+            "VVBBVVBBVV"
+        };
+
+        cargarMatriz(filas);
+    }
+
+    public boolean cargarMatriz(String[] filas) {
+        boolean cargo = true;
+
+        if (filas == null || filas.length != FILAS) {
+            cargo = false;
+        } else {
+            int fila = 0;
+
+            while (fila < FILAS && cargo) {
+                if (!filaValida(filas[fila])) {
+                    cargo = false;
+                }
+
+                fila = fila + 1;
+            }
+        }
+
+        if (cargo) {
+            for (int fila = 0; fila < FILAS; fila = fila + 1) {
+                String texto = normalizarTexto(filas[fila]);
+
+                for (int columna = 0; columna < COLUMNAS; columna = columna + 1) {
+                    tablero[fila][columna] = texto.charAt(columna);
+                }
+            }
+        }
+
+        return cargo;
+    }
+
+    public boolean cargarMatriz(char[][] matriz) {
+        boolean cargo = matrizConCeldasValidas(matriz);
+
+        if (cargo) {
+            for (int fila = 0; fila < FILAS; fila = fila + 1) {
+                for (int columna = 0; columna < COLUMNAS; columna = columna + 1) {
+                    tablero[fila][columna] = normalizarColor(matriz[fila][columna]);
+                }
+            }
+        }
+
+        return cargo;
+    }
+
+    public char[][] getMatriz() {
+        char[][] copia = clonarMatriz(tablero);
+        return copia;
+    }
+
+    public char[][] clonarMatriz(char[][] origen) {
+        char[][] copia = new char[FILAS][COLUMNAS];
+
+        if (matrizConFormatoValido(origen)) {
+            for (int fila = 0; fila < FILAS; fila = fila + 1) {
+                for (int columna = 0; columna < COLUMNAS; columna = columna + 1) {
+                    copia[fila][columna] = origen[fila][columna];
+                }
+            }
+        } else {
+            for (int fila = 0; fila < FILAS; fila = fila + 1) {
+                for (int columna = 0; columna < COLUMNAS; columna = columna + 1) {
+                    copia[fila][columna] = VACIO;
+                }
+            }
+        }
+
+        return copia;
+    }
+
+    // ============================================================
+    // CASO 1 - CONTAR FICHAS
+    // ============================================================
+
+    public int contarFichas(char[][] matriz, char color) {
+        color = normalizarColor(color);
+
+        int contador = 0;
+
+        if (colorValido(color) && matrizConFormatoValido(matriz)) {
+            for (int fila = 0; fila < FILAS; fila = fila + 1) {
+                for (int columna = 0; columna < COLUMNAS; columna = columna + 1) {
+                    if (matriz[fila][columna] == color) {
+                        contador = contador + 1;
+                    }
+                }
+            }
+        }
+
+        return contador;
+    }
+
+    // ============================================================
+    // CASO 2 - MOVIMIENTO INDIVIDUAL
+    // ============================================================
+
+    private boolean caminoLibreFicha(int fila, int columna, int df, int dc, int pasos, char color) {
+        boolean libre = true;
+        int paso = 1;
+
+        while (paso <= pasos && libre) {
+            int nuevaFila = fila + df * paso;
+            int nuevaColumna = columna + dc * paso;
+
+            if (!posicionValida(nuevaFila, nuevaColumna)) {
+                libre = false;
             } else {
-                if (i < pasos) {
-                    if (tablero[filaActual][colActual] != VACIO) {
-                        pudoMover = false;
+                if (paso < pasos) {
+                    if (tablero[nuevaFila][nuevaColumna] != VACIO) {
+                        libre = false;
+                    }
+                } else {
+                    if (tablero[nuevaFila][nuevaColumna] == color) {
+                        libre = false;
                     }
                 }
             }
 
-            i = i + 1;
+            paso = paso + 1;
         }
 
-        if (pudoMover) {
-            if (tablero[filaActual][colActual] == color) {
-                pudoMover = false;
+        return libre;
+    }
+
+    public boolean validarMovimientoIndividual(char color, String sentido, int fila,
+            int columna, int pasos) {
+
+        boolean valido = true;
+
+        color = normalizarColor(color);
+        sentido = normalizarTexto(sentido);
+
+        if (!posicionValida(fila, columna)) {
+            valido = false;
+        }
+
+        if (valido && !colorValido(color)) {
+            valido = false;
+        }
+
+        if (valido && pasos <= 0) {
+            valido = false;
+        }
+
+        if (valido && tablero[fila][columna] != color) {
+            valido = false;
+        }
+
+        if (valido && !direccionValidaParaFicha(sentido, color)) {
+            valido = false;
+        }
+
+        int df = 0;
+        int dc = 0;
+        int filaFinal = fila;
+        int columnaFinal = columna;
+
+        if (valido) {
+            df = desplazamientoFila(sentido);
+            dc = desplazamientoColumna(sentido);
+
+            filaFinal = fila + df * pasos;
+            columnaFinal = columna + dc * pasos;
+
+            if (!posicionValida(filaFinal, columnaFinal)) {
+                valido = false;
             }
         }
 
-        if (pudoMover) {
-            tablero[filaActual][colActual] = color;
-            tablero[fila][col] = VACIO;
+        if (valido && !caminoLibreFicha(fila, columna, df, dc, pasos, color)) {
+            valido = false;
         }
 
+        if (valido) {
+            tablero[filaFinal][columnaFinal] = color;
+            tablero[fila][columna] = VACIO;
+        }
+
+        return valido;
+    }
+
+    public boolean moverFicha(int fila, int columna, String sentido, char color, int pasos) {
+        boolean pudoMover = validarMovimientoIndividual(color, sentido, fila, columna, pasos);
         return pudoMover;
     }
-    public boolean moverGrupo(int fila, int col, int tam, String forma, String sentido, char color, int pasos) {
-        boolean esValido = true;
 
-        if (fila < 0 || fila >= 8 || col < 0 || col >= 10) {
-            esValido = false;
-        }
+    // ============================================================
+    // CASO 3 - MOVIMIENTO EN GRUPO
+    // ============================================================
 
-        if (esValido) {
-            if (tam <= 0 || pasos <= 0) {
-                esValido = false;
+    private boolean esParteDelGrupo(int fila, int columna, int[] filasOrigen,
+            int[] columnasOrigen, int tamano) {
+
+        boolean esParte = false;
+        int i = 0;
+
+        while (i < tamano && !esParte) {
+            if (filasOrigen[i] == fila && columnasOrigen[i] == columna) {
+                esParte = true;
             }
+
+            i = i + 1;
         }
 
-        if (esValido) {
+        return esParte;
+    }
+
+    private boolean cargarDatosGrupo(int fila, int columna, int tamano, String forma,
+            char color, int df, int dc, int pasos, int[] filasOrigen,
+            int[] columnasOrigen, int[] filasFinal, int[] columnasFinal) {
+
+        boolean valido = true;
+        int i = 0;
+
+        while (i < tamano && valido) {
+            int filaActual = fila;
+            int columnaActual = columna;
+
             if (forma.equals("H")) {
-                if (!(sentido.equals("N") || sentido.equals("S"))) {
-                    esValido = false;
-                }
+                columnaActual = columna + i;
             } else {
-                if (forma.equals("V")) {
-                    if (!(sentido.equals("E") || sentido.equals("O"))) {
-                        esValido = false;
-                    }
-                } else {
-                    esValido = false;
+                filaActual = fila + i;
+            }
+
+            if (!posicionValida(filaActual, columnaActual)) {
+                valido = false;
+            } else {
+                if (tablero[filaActual][columnaActual] != color) {
+                    valido = false;
                 }
             }
+
+            if (valido) {
+                int filaDestino = filaActual + df * pasos;
+                int columnaDestino = columnaActual + dc * pasos;
+
+                if (!posicionValida(filaDestino, columnaDestino)) {
+                    valido = false;
+                } else {
+                    filasOrigen[i] = filaActual;
+                    columnasOrigen[i] = columnaActual;
+                    filasFinal[i] = filaDestino;
+                    columnasFinal[i] = columnaDestino;
+                }
+            }
+
+            i = i + 1;
         }
 
-        if (esValido) {
-            if (color == 'B') {
-                if (!(sentido.equals("N") || sentido.equals("E") || sentido.equals("O"))) {
-                    esValido = false;
-                }
-            } else {
-                if (color == 'N') {
-                    if (!(sentido.equals("S") || sentido.equals("E") || sentido.equals("O"))) {
-                        esValido = false;
-                    }
+        return valido;
+    }
+
+    private boolean caminoLibreGrupo(int[] filasOrigen, int[] columnasOrigen,
+            int tamano, int df, int dc, int pasos) {
+
+        boolean libre = true;
+        int i = 0;
+
+        while (i < tamano && libre) {
+            int paso = 1;
+
+            while (paso <= pasos && libre) {
+                int nuevaFila = filasOrigen[i] + df * paso;
+                int nuevaColumna = columnasOrigen[i] + dc * paso;
+
+                if (!posicionValida(nuevaFila, nuevaColumna)) {
+                    libre = false;
                 } else {
-                    esValido = false;
+                    if (!esParteDelGrupo(nuevaFila, nuevaColumna, filasOrigen,
+                            columnasOrigen, tamano)
+                            && tablero[nuevaFila][nuevaColumna] != VACIO) {
+                        libre = false;
+                    }
                 }
+
+                paso = paso + 1;
             }
+
+            i = i + 1;
+        }
+
+        return libre;
+    }
+
+    private void aplicarMovimientoGrupo(int[] filasOrigen, int[] columnasOrigen,
+            int[] filasFinal, int[] columnasFinal, int tamano, char color) {
+
+        for (int i = 0; i < tamano; i = i + 1) {
+            tablero[filasOrigen[i]][columnasOrigen[i]] = VACIO;
+        }
+
+        for (int i = 0; i < tamano; i = i + 1) {
+            tablero[filasFinal[i]][columnasFinal[i]] = color;
+        }
+    }
+
+    public boolean validarMovimientoEnGrupo(char color, String forma, String sentido,
+            int fila, int columna, int tamano, int pasos) {
+
+        boolean valido = true;
+
+        color = normalizarColor(color);
+        forma = normalizarTexto(forma);
+        sentido = normalizarTexto(sentido);
+
+        if (!posicionValida(fila, columna)) {
+            valido = false;
+        }
+
+        if (valido && !colorValido(color)) {
+            valido = false;
+        }
+
+        if (valido && (tamano <= 0 || pasos <= 0)) {
+            valido = false;
+        }
+
+        if (valido && !formaValida(forma)) {
+            valido = false;
+        }
+
+        if (valido && !formaCompatibleConDireccion(forma, sentido)) {
+            valido = false;
+        }
+
+        if (valido && !direccionValidaParaGrupo(sentido, color)) {
+            valido = false;
         }
 
         int df = 0;
         int dc = 0;
 
-        if (esValido) {
-            switch (sentido) {
-                case "N":
-                    df = -1;
-                    dc = 0;
-                    break;
-                case "S":
-                    df = 1;
-                    dc = 0;
-                    break;
-                case "E":
-                    df = 0;
-                    dc = 1;
-                    break;
-                case "O":
-                    df = 0;
-                    dc = -1;
-                    break;
-                default:
-                    esValido = false;
-                    break;
-            }
-        }
-
         int[] filasOrigen = new int[0];
-        int[] colsOrigen = new int[0];
+        int[] columnasOrigen = new int[0];
         int[] filasFinal = new int[0];
-        int[] colsFinal = new int[0];
+        int[] columnasFinal = new int[0];
 
-        if (esValido) {
-          filasOrigen = new int[tam];
-          colsOrigen = new int[tam];
-          filasFinal = new int[tam];
-          colsFinal = new int[tam];
+        if (valido) {
+            df = desplazamientoFila(sentido);
+            dc = desplazamientoColumna(sentido);
+
+            filasOrigen = new int[tamano];
+            columnasOrigen = new int[tamano];
+            filasFinal = new int[tamano];
+            columnasFinal = new int[tamano];
+
+            valido = cargarDatosGrupo(fila, columna, tamano, forma, color, df, dc,
+                    pasos, filasOrigen, columnasOrigen, filasFinal, columnasFinal);
         }
 
-        int i = 0;
-        while (i < tam && esValido) {
-            int f = fila;
-            int c = col;
-
-            if (forma.equals("H")) {
-                c = col + i;
-            } else {
-                f = fila + i;
-            }
-
-            if (f < 0 || f >= 8 || c < 0 || c >= 10) {
-                esValido = false;
-            } else {
-                if (tablero[f][c] != color) {
-                    esValido = false;
-                }
-            }
-
-            if (esValido) {
-                filasOrigen[i] = f;
-                colsOrigen[i] = c;
-
-                int fFinal = f + df * pasos;
-                int cFinal = c + dc * pasos;
-
-                if (fFinal < 0 || fFinal >= 8 || cFinal < 0 || cFinal >= 10) {
-                    esValido = false;
-                } else {
-                    filasFinal[i] = fFinal;
-                    colsFinal[i] = cFinal;
-                }
-            }
-
-            i = i + 1;
+        if (valido && !caminoLibreGrupo(filasOrigen, columnasOrigen, tamano, df, dc, pasos)) {
+            valido = false;
         }
 
-        i = 0;
-        while (i < tam && esValido) {
-            int f = filasOrigen[i];
-            int c = colsOrigen[i];
-            int p = 1;
-
-            while (p <= pasos && esValido) {
-                int nuevaF = f + df * p;
-                int nuevaC = c + dc * p;
-                boolean esParteDelGrupo = false;
-
-                int j = 0;
-                while (j < tam && !esParteDelGrupo) {
-                    if (filasOrigen[j] == nuevaF && colsOrigen[j] == nuevaC) {
-                        esParteDelGrupo = true;
-                    }
-                    j = j + 1;
-                }
-
-                if (!esParteDelGrupo && tablero[nuevaF][nuevaC] != VACIO) {
-                    esValido = false;
-                }
-
-                p = p + 1;
-            }
-
-            i = i + 1;
+        if (valido) {
+            aplicarMovimientoGrupo(filasOrigen, columnasOrigen, filasFinal,
+                    columnasFinal, tamano, color);
         }
 
-        if (esValido) {
-            for (i = 0; i < tam; i = i + 1) {
-                tablero[filasOrigen[i]][colsOrigen[i]] = VACIO;
-            }
-
-            for (i = 0; i < tam; i = i + 1) {
-                tablero[filasFinal[i]][colsFinal[i]] = color;
-            }
-        }
-
-        return esValido;
+        return valido;
     }
-    
-    public boolean verificarConexion(char color) {
 
-        boolean[][] visitado = new boolean[8][10];
+    public boolean moverGrupo(int fila, int columna, int tamano, String forma,
+            String sentido, char color, int pasos) {
+
+        boolean pudoMover = validarMovimientoEnGrupo(color, forma, sentido, fila,
+                columna, tamano, pasos);
+        return pudoMover;
+    }
+
+    // ============================================================
+    // CASO 4 - PREPARAR TABLERO
+    // ============================================================
+
+    public String prepararTablero(char[][] matriz) {
+        String resultado = "";
+
+        if (!matrizConFormatoValido(matriz)) {
+            resultado = "Matriz invalida\n";
+        } else {
+            resultado = resultado + "   ";
+
+            for (int columna = 0; columna < COLUMNAS; columna = columna + 1) {
+                resultado = resultado + "  " + columna + " ";
+            }
+
+            resultado = resultado + "\n";
+
+            for (int fila = 0; fila < FILAS; fila = fila + 1) {
+                resultado = resultado + "   ";
+
+                for (int columna = 0; columna < COLUMNAS; columna = columna + 1) {
+                    resultado = resultado + "+---";
+                }
+
+                resultado = resultado + "+\n";
+                resultado = resultado + " " + fila + " ";
+
+                for (int columna = 0; columna < COLUMNAS; columna = columna + 1) {
+                    char celda = matriz[fila][columna];
+
+                    if (celda == VACIO) {
+                        resultado = resultado + "|   ";
+                    } else {
+                        resultado = resultado + "| " + celda + " ";
+                    }
+                }
+
+                resultado = resultado + "|\n";
+            }
+
+            resultado = resultado + "   ";
+
+            for (int columna = 0; columna < COLUMNAS; columna = columna + 1) {
+                resultado = resultado + "+---";
+            }
+
+            resultado = resultado + "+\n";
+        }
+
+        return resultado;
+    }
+
+    // ============================================================
+    // CASO 5 - VERIFICAR CONEXIÓN
+    // ============================================================
+
+    public boolean verificarConexion(char color) {
+        boolean conectadas = verificarConexion(tablero, color);
+        return conectadas;
+    }
+
+    public boolean verificarConexion(char[][] matriz, char color) {
+        color = normalizarColor(color);
+
+        boolean conectadas = false;
+        boolean[][] visitado = new boolean[FILAS][COLUMNAS];
 
         int totalColor = 0;
         int filaInicio = -1;
-        int colInicio = -1;
-        boolean estanConectadas = false;
+        int columnaInicio = -1;
 
-        for (int fila = 0; fila < 8; fila = fila + 1) {
-            for (int col = 0; col < 10; col = col + 1) {
+        if (colorValido(color) && matrizConFormatoValido(matriz)) {
+            for (int fila = 0; fila < FILAS; fila = fila + 1) {
+                for (int columna = 0; columna < COLUMNAS; columna = columna + 1) {
+                    if (matriz[fila][columna] == color) {
+                        totalColor = totalColor + 1;
 
-                if (tablero[fila][col] == color) {
-                    totalColor = totalColor + 1;
-
-                    if (filaInicio == -1) {
-                        filaInicio = fila;
-                        colInicio = col;
+                        if (filaInicio == -1) {
+                            filaInicio = fila;
+                            columnaInicio = columna;
+                        }
                     }
+                }
+            }
+
+            if (totalColor > 0) {
+                int cantidadVisitadas = contarConectadas(matriz, filaInicio,
+                        columnaInicio, color, visitado);
+
+                if (cantidadVisitadas == totalColor) {
+                    conectadas = true;
                 }
             }
         }
 
-        if (totalColor > 0) {
-            int cantidadVisitadas = contarConectadas(filaInicio, colInicio, color, visitado);
-
-            if (cantidadVisitadas == totalColor) {
-                estanConectadas = true;
-            }
-        }
-
-        return estanConectadas;
+        return conectadas;
     }
-    private int contarConectadas(int fila, int col, char color, boolean[][] visitado) {
+
+    private int contarConectadas(char[][] matriz, int fila, int columna,
+            char color, boolean[][] visitado) {
 
         int cantidad = 0;
 
-        if (fila < 0 || fila >= 8 || col < 0 || col >= 10) {
+        if (!posicionValida(fila, columna)) {
             cantidad = 0;
         } else {
-            if (visitado[fila][col]) {
+            if (visitado[fila][columna]) {
                 cantidad = 0;
             } else {
-                if (tablero[fila][col] != color) {
+                if (matriz[fila][columna] != color) {
                     cantidad = 0;
                 } else {
-                    visitado[fila][col] = true;
+                    visitado[fila][columna] = true;
                     cantidad = 1;
 
                     for (int df = -1; df <= 1; df = df + 1) {
                         for (int dc = -1; dc <= 1; dc = dc + 1) {
                             if (!(df == 0 && dc == 0)) {
-                                cantidad = cantidad + contarConectadas(fila + df, col + dc, color, visitado);
+                                cantidad = cantidad + contarConectadas(matriz,
+                                        fila + df, columna + dc, color, visitado);
                             }
                         }
                     }
@@ -487,72 +759,5 @@ public class Tablero {
         }
 
         return cantidad;
-        }
-        
-    public int contarFichas(char[][] matriz, char color){
-        int contador = 0;
-        for (int fila = 0; fila < 8; fila++) {
-            for (int columna = 0; columna < 10; columna++) {
-                if(matriz[fila][columna] == color){
-                    contador = contador + 1;
-                }                           
-            }            
-        }
-        return contador;
     }
-    
-    public String prepararTablero(char[][] matriz) {
-    String resultado = "";
-
-    // Encabezado con números de columna
-    resultado += "   ";
-    for (int col = 0; col < 10; col = col + 1) {
-        resultado += "  " + col + " ";
-    }
-    resultado += "\n";
-
-    for (int fila = 0; fila < 8; fila = fila + 1) {
-        // línea de separación
-        resultado += "   ";
-        for (int col = 0; col < 10; col = col + 1) {
-            resultado += "+---";
-        }
-        resultado += "+\n";
-
-        // contenido (con número de fila a la izquierda)
-        resultado += " " + fila + " ";
-        for (int col = 0; col < 10; col = col + 1) {
-            char celda = matriz[fila][col];
-            if (celda == VACIO) {
-                resultado += "|   ";
-            } else {
-                resultado += "| " + celda + " ";
-            }
-        }
-        resultado += "|\n";
-    }
-
-    // última línea
-    resultado += "   ";
-    for (int col = 0; col < 10; col = col + 1) {
-        resultado += "+---";
-    }
-    resultado += "+\n";
-
-    return resultado;
-}
-    public char[][] clonarMatriz(char[][] origen) {
-    char[][] copia = new char[8][10];
-    for (int fila = 0; fila < 8; fila = fila + 1) {
-        for (int columna = 0; columna < 10; columna = columna + 1) {
-            copia[fila][columna] = origen[fila][columna];
-        }
-    }
-    return copia;
-}
-    
-    public char[][] getMatriz() {
-       return tablero;
-}
-
 }
