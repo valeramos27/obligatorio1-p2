@@ -2,11 +2,12 @@
  Aitana Alvarez - 340201
  Valentina Ramos - 224347
  */
-
 package obligatorio1;
-import java.util.ArrayList;
 
-public class Tester {
+import java.util.ArrayList;
+import java.util.Collections;
+
+public class Tester implements Comparable<Tester> {
 
     private String nombre;
     private int edad;
@@ -17,9 +18,8 @@ public class Tester {
         this.nombre = nombre;
         this.edad = edad;
         this.experiencia = experiencia;
-        this.listaTesteos = new ArrayList<>();
+        this.listaTesteos = new ArrayList<Testeo>();
     }
-
 
     public String getNombre() {
         return nombre;
@@ -33,23 +33,30 @@ public class Tester {
         return experiencia;
     }
 
-    public ArrayList<Testeo> getListaTesteos() {
-        return listaTesteos;
-    }
-    
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public int getCantidadTesteos() {
+        int cantidad = this.listaTesteos.size();
+        return cantidad;
     }
 
-    public void setEdad(int edad) {
-        this.edad = edad;
+    public void agregarTesteo(Testeo unTesteo) {
+    this.listaTesteos.add(unTesteo);
+}
+
+    public ArrayList<Testeo> getTesteosOrdenados() {
+        ArrayList<Testeo> copia = new ArrayList<Testeo>(this.listaTesteos);
+        Collections.sort(copia);
+        return copia;
     }
 
-    public void setExperiencia(int experiencia) {
-        this.experiencia = experiencia;
+    @Override
+    public String toString() {
+        return "Tester: " + this.nombre
+                + " - Edad: " + this.edad
+                + " - Experiencia: " + this.experiencia + " años";
     }
 
-    public void setListaTesteos(ArrayList<Testeo> listaTesteos) {
-        this.listaTesteos = listaTesteos;
+    @Override
+    public int compareTo(Tester otro) {
+        return this.nombre.compareToIgnoreCase(otro.getNombre());
     }
 }
