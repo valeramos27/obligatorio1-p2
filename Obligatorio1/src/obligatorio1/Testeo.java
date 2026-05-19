@@ -28,25 +28,12 @@ public class Testeo implements Comparable<Testeo> {
         this.matrizOriginal = copiarMatriz(matrizOriginal);
         this.matrizResultante = copiarMatriz(matrizResultante);
     }
-
     private char[][] copiarMatriz(char[][] matriz) {
-        char[][] copia;
+        char[][] copia = new char[matriz.length][matriz[0].length];
 
-        if (matriz == null) {
-            copia = new char[0][0];
-        } else {
-            copia = new char[matriz.length][];
-
-            for (int fila = 0; fila < matriz.length; fila = fila + 1) {
-                if (matriz[fila] == null) {
-                    copia[fila] = new char[0];
-                } else {
-                    copia[fila] = new char[matriz[fila].length];
-
-                    for (int columna = 0; columna < matriz[fila].length; columna = columna + 1) {
-                        copia[fila][columna] = matriz[fila][columna];
-                    }
-                }
+        for (int fila = 0; fila < matriz.length; fila = fila + 1) {
+            for (int columna = 0; columna < matriz[0].length; columna = columna + 1) {
+                copia[fila][columna] = matriz[fila][columna];
             }
         }
 
@@ -85,38 +72,6 @@ public class Testeo implements Comparable<Testeo> {
     public char[][] getMatrizResultante() {
         char[][] copia = copiarMatriz(matrizResultante);
         return copia;
-    }
-
-    public void setNumero(int numero) {
-        this.numero = numero;
-    }
-
-    public void setNombreTester(String nombreTester) {
-        this.nombreTester = nombreTester;
-    }
-
-    public void setCaso(int caso) {
-        this.caso = caso;
-    }
-
-    public void setParametrosUsados(String parametrosUsados) {
-        this.parametrosUsados = parametrosUsados;
-    }
-
-    public void setComentario(String comentario) {
-        this.comentario = comentario;
-    }
-
-    public void setResultado(String resultado) {
-        this.resultado = resultado;
-    }
-
-    public void setMatrizOriginal(char[][] matrizOriginal) {
-        this.matrizOriginal = copiarMatriz(matrizOriginal);
-    }
-
-    public void setMatrizResultante(char[][] matrizResultante) {
-        this.matrizResultante = copiarMatriz(matrizResultante);
     }
 
     @Override

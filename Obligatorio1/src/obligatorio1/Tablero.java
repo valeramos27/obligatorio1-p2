@@ -77,8 +77,8 @@ public class Tablero {
         } else {
             int fila = 0;
 
-            while (fila < FILAS && valida) {//las recorro 
-                if (matriz[fila] == null || matriz[fila].length != COLUMNAS) {//Verifico que la fila exista y que tenga 10 columnas
+            while (fila < FILAS && valida) {
+                if (matriz[fila] == null || matriz[fila].length != COLUMNAS) {
                     valida = false;
                 }
 
@@ -277,7 +277,7 @@ public class Tablero {
         }
 
         if (cargo) {//Si todas las filas son validas cargo la matriz
-            for (int fila = 0; fila < FILAS; fila = fila + 1) { //recorro filas
+            for (int fila = 0; fila < FILAS; fila = fila + 1) { 
                 String texto = normalizarTexto(filas[fila]);
 
                 for (int columna = 0; columna < COLUMNAS; columna = columna + 1) {
@@ -295,7 +295,7 @@ public class Tablero {
         if (cargo) {
             for (int fila = 0; fila < FILAS; fila = fila + 1) {
                 for (int columna = 0; columna < COLUMNAS; columna = columna + 1) {
-                    tablero[fila][columna] = normalizarColor(matriz[fila][columna]);//guardo cada celda 
+                    tablero[fila][columna] = normalizarColor(matriz[fila][columna]);
                 }
             }
         }
@@ -580,7 +580,7 @@ public class Tablero {
             valido = false;
         }
 
-        if (valido && (tamano <= 0 || pasos <= 0)) {
+        if (valido && (tamano < 2 || pasos <= 0)) {
             valido = false;
         }
 
